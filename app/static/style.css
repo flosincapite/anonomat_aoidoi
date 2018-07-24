@@ -1,0 +1,28 @@
+.sidebar {
+  height: 100%;
+  padding-top: 20px;
+  position: fixed;
+}
+
+.container {
+  font-family: "Lucida";
+  font-size: 2em;
+}
+
+.bs-docs-header {
+  font-size: 24px;
+  padding-bottom: 60px;
+  padding-top: 60px;
+  text-align: left;
+}
+
+.bs-docs-masthead, .bs-docs-header {
+  background-color: #6F5499;
+  background-image: linear-gradient(to bottom, #563D7C 0px, #6F5499 100%);
+  background-repeat: repeat-x;
+  color: #CDBFE3;
+  padding: 30px 15px;
+  position: relative;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,37 @@
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+{% endblock %}
+
+{% block title %}
+<head>
+  <title>
+    Anonomat Aoidai
+  </title>
+</head>
+{% endblock %}
+
+{% block sidebar %}
+<div id="theSideNav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <li><a href="{{ url_for('index') }}">Home</a></li>
+</div>
+{% endblock %}
+
+{% block content %}
+
+  <div class="col-lg-2 col-md-4 visible-lg visible-md sidebar">
+    <h2>Sidebar</h2>
+    <hr>
+    <ul class="nav">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="col-lg-10">
+      {% block app_content %}
+      {% endblock %}
+    </div>
+  </div>
+
+{% endblock %}
