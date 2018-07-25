@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block additional_styles %}
+<!--TODO: investigate additional_ vs. {{ super() }} (latter doesn't work?)-->
+<style>
+.blogpost {
+  padding: 30px;
+}
+
+.authortext {
+  font-style: italic;
+}
+{% endblock %}
+
+{% block content %}
+{% for blog_post in blog_posts %}
+<div class="blogpost">
+{% if loop.index > 1 %}
+<hr>
+{% endif %}
+<h1>{{ blog_post.title }} | {{ blog_post.date }}</h1>
+<div class="authortext">{{ blog_post.author }}</div>
+<div>{{ blog_post.cdata }}</div>
+</div>
+{% endfor %}
+{% endblock %}

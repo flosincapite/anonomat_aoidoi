@@ -1,37 +1,111 @@
-{% block styles %}
-<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-{% endblock %}
+<!DOCTYPE html>
+<html>
 
-{% block title %}
 <head>
+  <!--TODO: move styles block if you get the <link> working.-->
+  {% block additional_styles %}
+  <style>
+  {% endblock %}
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 20px;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+
+    .navopenarrow {}
+
+    #main {
+      transition: margin-left .5s;
+      padding: 16px;
+    }
+  </style>
+  <!-- TODO: WHY CAN'T CSS LOAD FROM /STATIC? -->
+  <link
+    rel="stylesheet" type="text/css"
+    href="{{  url_for('static', filename='style.css')  }}" media="1">
+  </link>
+  {% block title %}
   <title>
     Anonomat Aoidai
   </title>
+  {% endblock %}
 </head>
-{% endblock %}
+
+<body>
+
+<div id="title" class="container">
+  {{ page_title }}
+</div>
+
+<div class="container">
 
 {% block sidebar %}
 <div id="theSideNav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <li><a href="{{ url_for('index') }}">Home</a></li>
+  <a href="javascript:void(0);" class="closebtn" onclick="closeNav()">
+    &times;
+  </a>
+  <a href="{{ url_for('index') }}">Home</a>
+  <a href="{{ url_for('blog') }}">Blog</a>
 </div>
 {% endblock %}
 
-{% block content %}
+<div id="main">
+  <span
+    id="arrow"
+    style="font-size:30px;cursor:pointer;left:5px" onclick="openNav()">
+    &#9658;
+  </span>
+  {% block content %}
+  {% endblock %}
+</div>
 
-  <div class="col-lg-2 col-md-4 visible-lg visible-md sidebar">
-    <h2>Sidebar</h2>
-    <hr>
-    <ul class="nav">
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-    </ul>
-  </div>
+</div>
+</body>
 
-  <div class="container">
-    <div class="col-lg-10">
-      {% block app_content %}
-      {% endblock %}
-    </div>
-  </div>
+<!-- TODO: Move these to a .js source file? -->
+<script>
 
-{% endblock %}
+function openNav() {
+  document.getElementById("theSideNav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+  var obj = document.getElementById("main");
+  var span = document.getElementById("main").querySelector("#arrow");
+  console.log(span);
+  console.log(span.innerHTML);
+}
+
+function closeNav() {
+  document.getElementById("theSideNav").style.width = "0";
+  document.getElementById("main").style.marginLeft = "0";
+}
+
+</script>
+</html>
