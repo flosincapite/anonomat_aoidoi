@@ -1,0 +1,19 @@
+{% block content %}
+
+  <div class="col-lg-2 col-md-4 visible-lg visible-md sidebar">
+    <h2>Sidebar</h2>
+    {{url_for('static', filename='style.css')}}
+    <hr>
+    <ul class="nav">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="col-lg-10">
+      <!-- {% block app_content %} -->
+      <!-- {% endblock %} -->
+    </div>
+  </div>
+
+{% endblock %}

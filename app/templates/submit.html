@@ -1,3 +1,21 @@
 {% extends "base.html" %}
 
-
+{% block content %}
+<h1>Submit</h1>
+<form action="" method="post">
+  {{ submit_form.secrettt() }}
+  <div>
+    {{ submit_form.email.label }}
+    {{ submit_form.email(size=50) }}
+  </div>
+  <div>
+    {{ submit_form.title.label }}
+    {{ submit_form.title(size=50) }}
+  </div>
+  <div>
+    {{ submit_form.contents.label }}
+    {{ submit_form.contents(size=1000) }}
+  </div>
+  {{ submit_form.submit() }}
+</form>
+{% endblock %}
