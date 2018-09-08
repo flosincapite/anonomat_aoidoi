@@ -8,7 +8,7 @@
   {% endblock %}
     .sidenav {
       height: 100%;
-      width: 0;
+      width: 160px;
       position: fixed;
       z-index: 1;
       top: 0;
@@ -44,6 +44,7 @@
 
     #main {
       transition: margin-left .5s;
+      margin-left: 160px;
       padding: 16px;
     }
   </style>
@@ -69,23 +70,23 @@
 
 {% block sidebar %}
 <div id="theSideNav" class="sidenav">
-  <a href="javascript:void(0);" class="closebtn" onclick="closeNav()">
-    &times;
-  </a>
+  <!-- <a href="javascript:void(0);" class="closebtn" onclick="closeNav()"> -->
+  <!--   &times; -->
+  <!-- </a> -->
   <a href="{{ url_for('index') }}">home</a>
   <a href="{{ url_for('blog') }}">blog</a>
   <a href="{{ url_for('issues') }}">issues</a>
   <a href="{{ url_for('submit') }}">submit</a>
-  <a href="{{ url_for('pdf') }}">TODO: remove. PDF.</a>
+  <a href="{{ url_for('login') }}">login</a>
 </div>
 {% endblock %}
 
 <div id="main">
-  <span
-    id="arrow"
-    style="font-size:30px;cursor:pointer;left:5px" onclick="openNav()">
-    &#9658;
-  </span>
+  <!--<span-->
+    <!--id="arrow"-->
+    <!--style="font-size:30px;cursor:pointer;left:5px" onclick="openNav()">-->
+    <!--&#9658;-->
+  <!--</span>-->
   {% block content %}
   {% endblock %}
 </div>
@@ -97,8 +98,8 @@
 <script>
 
 function openNav() {
-  document.getElementById("theSideNav").style.width = "250px";
-  document.getElementById("main").style.marginLeft = "250px";
+  document.getElementById("theSideNav").style.width = "160px";
+  document.getElementById("main").style.marginLeft = "160px";
   var obj = document.getElementById("main");
   var span = document.getElementById("main").querySelector("#arrow");
   console.log(span);

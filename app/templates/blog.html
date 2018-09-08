@@ -23,4 +23,19 @@
 <div>{{ blog_post.cdata }}</div>
 </div>
 {% endfor %}
+{% if current_user.get_id() is not none %}
+<div class="blogpost">
+<hr>
+<h1>New Post</h1>
+{#  <form action="" method="post"> #}
+{#   {{ post_form.secrettt() }} #}
+{#   <div> #}
+{#     {{ post_form.content.label }} #}
+{#     {{ post_form.content(size=50) }} #}
+{#   </div> #}
+{#   {{ post_form.submit() }} #}
+{# </form> #}
+UNDER CONSTRUCTION
+</div>
+{% endif %}
 {% endblock %}

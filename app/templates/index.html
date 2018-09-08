@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-<div class="my_content">
-  HOME STUFF
-  <ul class="nav">
-    <li>THING</li>
-    <li>THING</li>
-    <li>THING</li>
-  </ul>
+{% block content %}
+<div>
+  {% if current_user.get_id() %}
+  Hello, {{ current_user.get_id() }}.
+  {% else %}
+  You are not logged in.
+  {% endif %}
 </div>
 {% endblock %}

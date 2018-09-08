@@ -9,7 +9,11 @@
     }
 
     .activarrow:hover {
-      color: #f1f1f1;
+      font-color: #ff1111;
+    }
+
+    .center {
+      margin: auto;
     }
   </style>
   <title>
@@ -19,16 +23,19 @@
 <body>
   <!--TODO: Infer title  from Issue object.-->
   <!--TODO: Infer from Issue object.-->
-  {{ pdf_file }}
-  <embed
-    id="the_page"
-    src="{{ pdf_file }}" type="application/pdf" width="50%" height="800px">
-  </embed>
+  <div class="center">
+    <embed
+      id="the_page"
+      src="{{ pdf_file }}" type="application/pdf" width="50%" height="800px">
+    </embed>
+  </div>
 
-  <span class="activearrow" id="leftarrow">&#8701;</span> |
-  Issues |
-  Home |
-  <span class="activearrow" id="rightarrow">&#8702;</span>
+  <div class="center">
+    <span class="activearrow" id="leftarrow">&#8701;</span> |
+    <a href="{{ url_for('issues') }}">Issues</a> |
+    <a href="{{ url_for('index') }}">Home</a> |
+    <span class="activearrow" id="rightarrow">&#8702;</span>
+  </div>
 </body>
 
 <script>

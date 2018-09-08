@@ -1,0 +1,10 @@
+- !!python/object/apply:collections.OrderedDict
+  - - [author, Juvenalis]
+    - [cdata, quis custodiet ipsos/]
+    - [date, 20180701]
+    - [title, 'Custodes?']
+- !!python/object/apply:collections.OrderedDict
+  - - [author, Valmiki]
+    - [cdata, kuujantam raama raameti]
+    - [date, then]
+    - [title, Birds]

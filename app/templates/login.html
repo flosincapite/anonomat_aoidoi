@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Login</h1>
+<form action="" method="post">
+  {{ login_form.secrettt() }}
+  <div>
+    {{ login_form.name.label }}
+    {{ login_form.name(size=50) }}
+  </div>
+  <div>
+    {{ login_form.password.label }}
+    {{ login_form.password(size=50) }}
+  </div>
+  {{ login_form.create_new() }}
+  {{ login_form.login() }}
+</form>
+{% endblock %}

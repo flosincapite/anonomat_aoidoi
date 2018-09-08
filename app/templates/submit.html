@@ -14,7 +14,7 @@
   </div>
   <div>
     {{ submit_form.contents.label }}
-    {{ submit_form.contents(size=1000) }}
+    {{ submit_form.contents(cols="100", rows="30")|safe }}
   </div>
   {{ submit_form.submit() }}
 </form>
