@@ -6,6 +6,13 @@
   {% block additional_styles %}
   <style>
   {% endblock %}
+    body {
+      margin: 0px;
+      background-image: url(
+        "{{ url_for('static', filename='orpheus_eurydice.jpg') }}");
+      background-size: 800px;
+    }
+
     .sidenav {
       height: 100%;
       width: 160px;
@@ -40,15 +47,24 @@
       margin-left: 50px;
     }
 
+    #backgrounddiv {
+      padding: 50px;
+      border: 1px solid black;
+      opacity: 0.7;
+      background-color: #ffffff;
+    }
+
     .navopenarrow {}
 
     #main {
       transition: margin-left .5s;
+      padding: 30px;
       margin-left: 160px;
-      padding: 16px;
+      height: 100vh;
     }
   </style>
   <!-- TODO: WHY CAN'T CSS LOAD FROM /STATIC? -->
+  <!--background-color: #0000ff;-->
   <link
     rel="stylesheet" type="text/css"
     href="{{  url_for('static', filename='style.css')  }}" media="1">
@@ -87,8 +103,10 @@
     <!--style="font-size:30px;cursor:pointer;left:5px" onclick="openNav()">-->
     <!--&#9658;-->
   <!--</span>-->
+  <div id="backgrounddiv">
   {% block content %}
   {% endblock %}
+  </div>
 </div>
 
 </div>
