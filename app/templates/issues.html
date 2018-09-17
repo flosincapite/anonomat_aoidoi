@@ -5,6 +5,7 @@
 <a href="{{ url_for(
   'single_page', issue_number=issue.number, page_number=1) }}">
   {{ issue.title }} | Issue {{ issue.number }}
-</a> 
+</a>
+<br />
 {% endfor %}
 {% endblock %}

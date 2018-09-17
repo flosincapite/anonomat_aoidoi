@@ -3,6 +3,7 @@ import flask_login
 
 import app
 from app import blog_post
+from app import issue as app_issue
 from app import submit_form
 from app.login import login_form
 from app.login import user
@@ -27,6 +28,7 @@ BLOG:
 
 
 ISSUE_TO_PAGES = {}
+CURRENT_ISSUE = []
 
 
 class _DummyUser(object):
@@ -76,13 +78,13 @@ def submit_submit():
 @app.wsgi_app.route('/issues')
 def issues():
   # TODO: Import here: awful hack. Figure out how to generate URLs properly.
-  from app import issue
   return flask.render_template(
-      'issues.html', page_title='Issues', issues=issue.Issue.list())
+      'issues.html', page_title='Issues', issues=app_issue.Issue.list())
 
 
 def _file_for(issue, page):
   # TODO: Respect parameters.
+  print('Filename: ' + 'issues/%s/%s.pdf' % (issue, page))
   return flask.url_for('static', filename='issues/%s/%s.pdf' % (issue, page))
 
 
@@ -90,14 +92,19 @@ def _file_for(issue, page):
 def next_page():
   # TODO: This should be part of a separate, private API.
   request = flask.request.get_json()
+  print('Request is:')
+  print(request)
   next_page = sum(map(
     int,
     [request.get('direction', 0), request.get('currentPage', 0)]))
+  
+  the_issue = app_issue.Issue.from_meta(request['issue'])
+
   response = flask.jsonify({
-    'hasLeft': True,
-    'hasRight': True,
+    'hasLeft': next_page > int(the_issue.lowest),
+    'hasRight': next_page < int(the_issue.highest),
     'nextPage': next_page,
-    'pdfFile': _file_for(int(request.get('issue', 0)), next_page)})
+    'pdfFile': _file_for(request['issue'], next_page)})
   return response, 201
 
 
@@ -105,9 +112,10 @@ def _file_exists(file_name):
   return True
 
 
-@app.wsgi_app.route('/viewer/<re(\'(\d+)\'):issue_number>/<re(\'(\d+)\'):page_number>')
+@app.wsgi_app.route('/viewer/<re(\'(\w+)\'):issue_number>/<re(\'(\d+)\'):page_number>')
 def single_page(issue_number, page_number):
   # TODO: Consult page number!
+  print('issue_number is ' + str(issue_number))
   this_page = int(page_number)
   prev_page = this_page - 1
   if prev_page <= 0:
@@ -118,7 +126,7 @@ def single_page(issue_number, page_number):
   return flask.render_template(
       'view_pdf.html', page_title='Issue %s' % issue_number,
       pdf_file=_file_for(*map(str, [issue_number, page_number])),
-      prev_page=prev_page, next_page=next_page)
+      issue_number=issue_number, prev_page=prev_page, next_page=next_page)
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])

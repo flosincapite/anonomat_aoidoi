@@ -1,6 +1,7 @@
 import collections
 import os
 import re
+import threading
 
 import flask
 import yaml
@@ -8,7 +9,16 @@ import yaml
 import app
 
 
-_Issue = collections.namedtuple('Issue', ['title', 'pages', 'number'])
+_Issue = collections.namedtuple(
+    'Issue', ['title', 'pages', 'number', 'lowest', 'highest'])
+
+
+_CACHE = {}
+_CACHE_LOCK = threading.Lock()
+
+
+def _meta_for(directory):
+  return os.path.join(directory, 'meta.yaml')
 
 
 class Issue(_Issue):
@@ -18,31 +28,33 @@ class Issue(_Issue):
 
   @classmethod
   def from_meta(cls, number):
-    issue_directory = os.path.join(cls.DATA_DIRECTORY, str(number))
-    meta_file = os.path.join(issue_directory, 'meta.yaml')
-    with open(meta_file, 'r') as inp:
-      config = yaml.load(inp)
-    
-    pages = []
-    for file_name in os.listdir(issue_directory):
-      match = re.search(r'^(\d+)\.pdf$', file_name)
-      if match:
-        pages.append(match.groups()[0])
+    if number not in _CACHE:
+      with _CACHE_LOCK:
+        issue_directory = os.path.join(cls.DATA_DIRECTORY, number)
+        meta_file = _meta_for(issue_directory)
+        with open(meta_file, 'r') as inp:
+          config = yaml.load(inp)
+        
+        pages = []
+        for file_name in os.listdir(issue_directory):
+          match = re.search(r'^(\d+)\.pdf$', file_name)
+          if match:
+            pages.append(match.groups()[0])
 
-    return Issue(title=config['title'], pages=pages, number=number)
+        pages = list(map(str, sorted(map(int, pages))))
+
+        the_issue = Issue(
+            title=config['title'], pages=pages, number=number, lowest=pages[0],
+            highest=pages[-1])
+        _CACHE[number] = the_issue
+    return _CACHE[number]
 
   @classmethod
   def list(cls):
-    def _can_int(string):
-      try:
-        _ = int(string)
-      except:
-        return False
-      else:
-        return True
     issue_numbers = [
-        subdir for subdir in os.listdir(cls.DATA_DIRECTORY) if _can_int(subdir)]
+        subdir for subdir in os.listdir(cls.DATA_DIRECTORY)
+        if os.path.isfile(_meta_for(os.path.join(cls.DATA_DIRECTORY, subdir)))]
     issues = []
-    for issue in sorted(map(int, issue_numbers)):
+    for issue in sorted(issue_numbers):
       issues.append(cls.from_meta(issue))
     return issues
