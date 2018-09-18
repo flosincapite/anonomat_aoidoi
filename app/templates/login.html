@@ -5,13 +5,14 @@
 <form action="" method="post">
   {{ login_form.secrettt() }}
   <div>
-    {{ login_form.name.label }}
+    <div width=100px>{{ login_form.name.label }}</div>
     {{ login_form.name(size=50) }}
   </div>
   <div>
-    {{ login_form.password.label }}
+    <div width=100px>{{ login_form.password.label }}</div>
     {{ login_form.password(size=50) }}
   </div>
+  <br />
   {{ login_form.create_new() }}
   {{ login_form.login() }}
 </form>

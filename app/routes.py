@@ -52,7 +52,7 @@ def load_user(user_id):
 @app.wsgi_app.route('/index')
 def index():
   return flask.render_template(
-      'index.html', title='Anonomat Aoidoi', page_title='Anonomat Aoidoi')
+      'index2.html', title='Anonomat Aoidoi', page_title='Anonomat Aoidoi')
 
 
 @app.wsgi_app.route('/blog')

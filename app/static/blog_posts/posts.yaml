@@ -1,4 +1,9 @@
 - !!python/object/apply:collections.OrderedDict
+  - - [author, Administrators]
+    - [cdata, This is the blog.]
+    - [date, Fore Time]
+    - [title, Blog]
+- !!python/object/apply:collections.OrderedDict
   - - [author, Juvenalis]
     - [cdata, quis custodiet ipsos/]
     - [date, 20180701]

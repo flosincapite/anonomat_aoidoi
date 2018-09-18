@@ -2,20 +2,16 @@
 
 {% block content %}
 <h1>Submit</h1>
-<form action="" method="post">
-  {{ submit_form.secrettt() }}
-  <div>
-    {{ submit_form.email.label }}
-    {{ submit_form.email(size=50) }}
-  </div>
-  <div>
-    {{ submit_form.title.label }}
-    {{ submit_form.title(size=50) }}
-  </div>
-  <div>
-    {{ submit_form.contents.label }}
-    {{ submit_form.contents(cols="100", rows="30")|safe }}
-  </div>
-  {{ submit_form.submit() }}
-</form>
+
+For poetry, we accept submissions in .doc or .txt format.
+
+<br />
+
+For images, we accept submissions in .png or .jpg format.
+
+<br />
+
+Please email us at EMAIL with a description of your work and a brief bio. Be
+sure to include your art in a clearly titled attachment.
+
 {% endblock %}
