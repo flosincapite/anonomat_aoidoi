@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-  <style>
-    .activearrow {
-      font-size: 30px;
-      cursor: pointer;
-    }
+{% block additional_styles %}
 
-    .activarrow:hover {
-      font-color: #ff1111;
-    }
+<style>
+  .activearrow {
+    font-size: 30px;
+    cursor: pointer;
+  }
 
-    .center {
-      margin: auto;
-    }
-  </style>
-  <title>
-  </title>
-</head>
+  .activarrow:hover {
+    font-color: #ff1111;
+  }
 
-<body>
-  <!--TODO: Infer title  from Issue object.-->
-  <!--TODO: Infer from Issue object.-->
+  .center {
+    margin: auto;
+    opacity: 1.0;
+  }
+{% endblock %}
+
+{% block content %}
   <div class="center">
     <embed
       id="the_page"
-      src="{{ pdf_file }}" type="application/pdf" width="50%" height="800px">
+      src="{{ pdf_file }}#toolbar=0&navpanes=0&scrollbar=0"
+      type="application/pdf" width="100%" height="1200px">
     </embed>
   </div>
 
@@ -36,7 +33,6 @@
     <a href="{{ url_for('index') }}">Home</a> |
     <span class="activearrow" id="rightarrow">&#8702;</span>
   </div>
-</body>
 
 <script>
 
@@ -87,4 +83,4 @@ rightarrow.addEventListener("click", rightArrow, true);
 
 </script>
 
-</html>
+{% endblock %}

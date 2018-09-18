@@ -1,11 +1,12 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 
 {% block content %}
 {% for issue in issues %}
+{{ issue.title }} (Issue {{ issue.number }})
 <a href="{{ url_for(
-  'single_page', issue_number=issue.number, page_number=1) }}">
-  {{ issue.title }} | Issue {{ issue.number }}
+  'single_page', issue_number=issue.number, page_number=issue.lowest) }}">
+  TODO:IMAGE
 </a>
-<br />
+<hr />
 {% endfor %}
 {% endblock %}

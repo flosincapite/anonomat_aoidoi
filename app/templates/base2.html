@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block additional_styles %}
+<style>
+body {
+  margin: 0px;
+  background-image: url(
+    "{{ url_for('static', filename='orpheus_eurydice.jpg') }}");
+  background-size: 1000px;
+}
+
+#backgrounddiv {
+  padding: 50px;
+  border: 1px solid black;
+  opacity: 0.8;
+  background-color: #ffffff;
+}
+{% endblock %}
