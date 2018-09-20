@@ -8,30 +8,33 @@
     cursor: pointer;
   }
 
-  .activarrow:hover {
+  .activearrow:hover {
     font-color: #ff1111;
   }
 
-  .center {
+  .page {
     margin: auto;
-    opacity: 1.0;
+    border: 2px solid black;
+  }
+
+  .centered {
+    margin: auto;
+    width: 20%;
   }
 {% endblock %}
 
 {% block content %}
-  <div class="center">
-    <embed
-      id="the_page"
-      src="{{ pdf_file }}#toolbar=0&navpanes=0&scrollbar=0"
-      type="application/pdf" width="100%" height="1200px">
-    </embed>
-  </div>
+  <div>
+    <div class="page">
+      <img
+        id="the_page" src="{{ png_file }}" type="application/png"
+        width="600" />
+    </div>
 
-  <div class="center">
-    <span class="activearrow" id="leftarrow">&#8701;</span> |
-    <a href="{{ url_for('issues') }}">Issues</a> |
-    <a href="{{ url_for('index') }}">Home</a> |
-    <span class="activearrow" id="rightarrow">&#8702;</span>
+    <div class="centered">
+      <span class="activearrow" id="leftarrow">&#8701;</span> |
+      <span class="activearrow" id="rightarrow">&#8702;</span>
+    </div>
   </div>
 
 <script>

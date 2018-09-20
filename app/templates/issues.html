@@ -2,11 +2,15 @@
 
 {% block content %}
 {% for issue in issues %}
+
+{% if loop.index > 1 %}
+<hr />
+{% endif %}
+
 {{ issue.title }} (Issue {{ issue.number }})
 <a href="{{ url_for(
   'single_page', issue_number=issue.number, page_number=issue.lowest) }}">
   TODO:IMAGE
 </a>
-<hr />
 {% endfor %}
 {% endblock %}

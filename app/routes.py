@@ -84,8 +84,7 @@ def issues():
 
 def _file_for(issue, page):
   # TODO: Respect parameters.
-  print('Filename: ' + 'issues/%s/%s.pdf' % (issue, page))
-  return flask.url_for('static', filename='issues/%s/%s.pdf' % (issue, page))
+  return flask.url_for('static', filename='issues/%s/%s.png' % (issue, page))
 
 
 @app.wsgi_app.route('/nextpage', methods=['POST'])
@@ -125,7 +124,7 @@ def single_page(issue_number, page_number):
     next_page = -1
   return flask.render_template(
       'view_pdf.html', page_title='Issue %s' % issue_number,
-      pdf_file=_file_for(*map(str, [issue_number, page_number])),
+      png_file=_file_for(*map(str, [issue_number, page_number])),
       issue_number=issue_number, prev_page=prev_page, next_page=next_page)
 
 
