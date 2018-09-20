@@ -10,7 +10,7 @@ import app
 
 
 _Issue = collections.namedtuple(
-    'Issue', ['title', 'pages', 'number', 'lowest', 'highest'])
+    'Issue', ['title', 'pages', 'number', 'lowest', 'highest', 'cover'])
 
 
 _CACHE = {}
@@ -45,7 +45,7 @@ class Issue(_Issue):
 
         the_issue = Issue(
             title=config['title'], pages=pages, number=number, lowest=pages[0],
-            highest=pages[-1])
+            highest=pages[-1], cover=config['cover'])
         _CACHE[number] = the_issue
     return _CACHE[number]
 

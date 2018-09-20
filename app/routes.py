@@ -103,7 +103,8 @@ def next_page():
     'hasLeft': next_page > int(the_issue.lowest),
     'hasRight': next_page < int(the_issue.highest),
     'nextPage': next_page,
-    'pdfFile': _file_for(request['issue'], next_page)})
+    'leftPng': _file_for(request['issue'], next_page),
+    'rightPng': _file_for(request['issue'], next_page + 1)})
   return response, 201
 
 
@@ -122,9 +123,14 @@ def single_page(issue_number, page_number):
   next_page = this_page + 1
   if not _file_exists(this_page):
     next_page = -1
+
+  # Determine page numbers.
+  left_number = this_page 
+  right_number = left_number + 1
   return flask.render_template(
       'view_pdf.html', page_title='Issue %s' % issue_number,
-      png_file=_file_for(*map(str, [issue_number, page_number])),
+      left_page=_file_for(*map(str, [issue_number, left_number])),
+      right_page=_file_for(*map(str, [issue_number, right_number])),
       issue_number=issue_number, prev_page=prev_page, next_page=next_page)
 
 

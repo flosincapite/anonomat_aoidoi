@@ -7,10 +7,15 @@
 <hr />
 {% endif %}
 
-{{ issue.title }} (Issue {{ issue.number }})
+Issue #{{ issue.number }}
+<br />
+{{ issue.title }}
+<br />
 <a href="{{ url_for(
   'single_page', issue_number=issue.number, page_number=issue.lowest) }}">
-  TODO:IMAGE
+  <img
+    src="{{ url_for('static', filename=issue.cover) }}" width=200px
+    opacity=1.0 />
 </a>
 {% endfor %}
 {% endblock %}

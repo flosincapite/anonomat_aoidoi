@@ -20,22 +20,47 @@
   .centered {
     margin: auto;
     width: 20%;
+    position: relative;
+  }
+
+  .image_left {
+    float: left;
+    width: 49%;
+  }
+
+  .image_right {
+    float: left;
+    width: 50%;
+    border-left: 1px solid black;
+  }
+
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
   }
 {% endblock %}
 
 {% block content %}
-  <div>
     <div class="page">
-      <img
-        id="the_page" src="{{ png_file }}" type="application/png"
-        width="600" />
+      <div class="row">
+        <div class="image_left">
+          <img
+            id="left_page" src="{{ left_page }}" type="application/png"
+            style="width:100%" />
+        </div>
+        <div class="image_right">
+          <img
+            id="right_page" src="{{ right_page }}" type="application/png"
+            style="width:100%" />
+        </div>
+      </div>
     </div>
 
     <div class="centered">
       <span class="activearrow" id="leftarrow">&#8701;</span> |
       <span class="activearrow" id="rightarrow">&#8702;</span>
     </div>
-  </div>
 
 <script>
 
@@ -55,7 +80,8 @@ function handleClick(_direction) {
     } else {
       // TODO: Unclickable.
     }
-    document.getElementById("the_page").setAttribute("src", response.pdfFile);
+    document.getElementById("left_page").setAttribute("src", response.leftPng);
+    document.getElementById("right_page").setAttribute("src", response.rightPng);
     _currentPage = response.nextPage;
     if (response.hasRight) {
       // TODO: make right arrow clickable.
@@ -71,14 +97,14 @@ function handleClick(_direction) {
 }
 
 function leftArrow() {
-  handleClick("-1");
+  handleClick("-2");
 }
 
 var leftarrow = document.getElementById("leftarrow");
 leftarrow.addEventListener("click", leftArrow, true);
 
 function rightArrow() {
-  handleClick("1");
+  handleClick("2");
 }
 
 var rightarrow = document.getElementById("rightarrow");
