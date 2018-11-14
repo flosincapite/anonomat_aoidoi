@@ -78,8 +78,9 @@ def submit_submit():
 @app.wsgi_app.route('/issues')
 def issues():
   # TODO: Import here: awful hack. Figure out how to generate URLs properly.
+  issues = app_issue.Issue.list()
   return flask.render_template(
-      'issues.html', page_title='Issues', issues=app_issue.Issue.list())
+      'issues.html', page_title='Issues', issues=issues)
 
 
 def _file_for(issue, page):
@@ -99,12 +100,14 @@ def next_page():
   
   the_issue = app_issue.Issue.from_meta(request['issue'])
 
-  response = flask.jsonify({
+  response_json = {
     'hasLeft': next_page > int(the_issue.lowest),
     'hasRight': next_page < int(the_issue.highest),
     'nextPage': next_page,
     'leftPng': _file_for(request['issue'], next_page),
-    'rightPng': _file_for(request['issue'], next_page + 1)})
+    'rightPng': _file_for(request['issue'], next_page + 1)}
+  print(response_json)
+  response = flask.jsonify(response_json)
   return response, 201
 
 
@@ -127,11 +130,13 @@ def single_page(issue_number, page_number):
   # Determine page numbers.
   left_number = this_page 
   right_number = left_number + 1
+  print(left_number, right_number)
   return flask.render_template(
       'view_pdf.html', page_title='Issue %s' % issue_number,
       left_page=_file_for(*map(str, [issue_number, left_number])),
       right_page=_file_for(*map(str, [issue_number, right_number])),
-      issue_number=issue_number, prev_page=prev_page, next_page=next_page)
+      issue_number=issue_number, prev_page=prev_page, next_page=next_page,
+      page_number=this_page)
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])
@@ -157,4 +162,5 @@ def login(error=None):
         flask_login.login_user(the_user)
         return flask.redirect('index')
   
-  return flask.render_template('login.html', login_form=form)
+  return flask.render_template(
+      'login.html', page_title='Login', login_form=form)

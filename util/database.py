@@ -28,7 +28,6 @@ class YamlDatabase(object):
   def _entities_from_file(self, file_name):
     with open(os.path.join(self._directory, file_name), 'r') as inp:
       things = yaml.load(inp)
-      print(things)
       return [self._initializer(e) for e in things]
       # return map(self._initializer, yaml.load(inp))
 

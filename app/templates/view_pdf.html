@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block additional_styles %}
+  <style>
 
-<style>
   .activearrow {
     font-size: 30px;
     cursor: pointer;
@@ -64,7 +64,7 @@
 
 <script>
 
-var _currentPage = 1;
+var _currentPage = "{{ page_number }}";
 var _issue = "{{ issue_number }}";
 
 function handleClick(_direction) {

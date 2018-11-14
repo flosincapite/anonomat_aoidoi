@@ -1,21 +1,6 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 
-{% block additional_styles %}
-<!--TODO: investigate additional_ vs. {{ super() }} (latter doesn't work?)-->
-<style>
-body {
-  margin: 0px;
-  background-image: url(
-    "{{ url_for('static', filename='orpheus_eurydice.jpg') }}");
-  background-size: 1000px;
-}
-
-#backgrounddiv {
-  padding: 50px;
-  border: 1px solid black;
-  opacity: 0.8;
-  background-color: #ffffff;
-}
+{% block more_styles %}
 
 .blogpost {
   padding: 30px;
@@ -30,14 +15,17 @@ body {
 {% block content %}
 {% for blog_post in blog_posts %}
 <div class="blogpost">
+
 {% if loop.index > 1 %}
 <hr>
 {% endif %}
+
 <h1>{{ blog_post.title }} | {{ blog_post.date }}</h1>
 <div class="authortext">{{ blog_post.author }}</div>
 <div>{{ blog_post.cdata }}</div>
 </div>
 {% endfor %}
+
 {% if current_user.get_id() is not none %}
 <div class="blogpost">
 <hr>

@@ -1,9 +1,29 @@
 {% extends "base2.html" %}
 
-{% block content %}
-{% for issue in issues %}
+{% block more_styles %}
 
-{% if loop.index > 1 %}
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.flex-child {
+  margin: auto;
+}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="flex-container">
+
+{% for issue in issues %}
+<div class="flex-child">
+
+{% if loop.index > 100 %}
 <hr />
 {% endif %}
 
@@ -17,5 +37,9 @@ Issue #{{ issue.number }}
     src="{{ url_for('static', filename=issue.cover) }}" width=200px
     opacity=1.0 />
 </a>
+</div>
 {% endfor %}
+
+</div>
+
 {% endblock %}
