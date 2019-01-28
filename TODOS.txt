@@ -1,0 +1,4 @@
+-- add blog interface
+-- automate issue creation a little more
+-- real database!
+-- IP masking
