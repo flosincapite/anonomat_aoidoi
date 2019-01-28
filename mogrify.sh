@@ -1,1 +1,8 @@
-mogrify -verbose -density 500 -resize 800 -format png app/static/issues/test/*.pdf
+if [[ ${1} == "" ]]; then
+  echo "Usage: mogrify.sh <file_glob>"
+  exit 1
+fi
+
+mogrify \
+  -verbose -density 500 -resize 800 -format png \
+  ${1}
