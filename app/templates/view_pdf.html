@@ -18,20 +18,34 @@
   }
 
   .centered {
-    margin: auto;
-    width: 20%;
-    position: relative;
+    /* margin: auto; */
+    /* width: 20%; */
+    /* position: relative; */
+    text-align: center
+  }
+
+  .child {
+    display: inline-block
   }
 
   .image_left {
+    /* TODO: Use flexbox or React instead of float:left for side-by-side. */
     float: left;
-    width: 49%;
+    width: 49.5%;
+    border-right: 1px solid black;
+    /*border-left: 2px solid black;*/
   }
 
   .image_right {
     float: left;
-    width: 50%;
+    width: 49.5%;
     border-left: 1px solid black;
+    /*border-right: 3px solid black;*/
+  }
+
+  .image_center {
+    width: 100%;
+    border: 1px solid black;
   }
 
   .row::after {
@@ -42,7 +56,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page">
+  <div id="book">
+    <div id="the_pages" class="page">
+      {% if false %}
       <div class="row">
         <div class="image_left">
           <img
@@ -55,17 +71,47 @@
             style="width:100%" />
         </div>
       </div>
+      {% else %}
+      <div class="row">
+        <div class="image_center">
+          <img
+            id="single_page" src="{{ left_page }}" type="application/png"
+            style="width:100%" />
+        </div>
+      </div>
+      {% endif %}
     </div>
 
     <div class="centered">
-      <span class="activearrow" id="leftarrow">&#8701;</span> |
-      <span class="activearrow" id="rightarrow">&#8702;</span>
+      <div class="child">
+        <span class="activearrow" id="leftarrow">&#8701;</span> |
+        <span class="activearrow" id="rightarrow">&#8702;</span>
+      </div>
     </div>
+  </div>
 
 <script>
 
 var _currentPage = "{{ page_number }}";
 var _issue = "{{ issue_number }}";
+
+function getImageRow(image_class, png) {
+    while (node.hasChildNodes()) {
+      node.removeChild(node.lastChild);
+    }
+  var row_div = document.createElement("div");
+  row_div.setAttribute("class", "row");
+  var image_center_div = document.createElement("div");
+  image_center_div.setAttribute("class", image_class);
+  var the_image = document.createElement("img");
+  the_image.setAttribute("id", "single_page");
+  the_image.setAttribute("src", png);
+  the_image.setAttribute("type", "application/png");
+  the_image.setAttribute("style", "width:100%");
+  image_center_div.appendChild(the_image);
+  row_div.appendChild(image_center_div);
+  return row_div;
+}
 
 function handleClick(_direction) {
   var xhr = new XMLHttpRequest();
@@ -73,16 +119,25 @@ function handleClick(_direction) {
   xhr.setRequestHeader('Content-Type', 'application/json');
 
   xhr.onload = function() {
+    var node = document.getElementById("the_pages");
     console.log(xhr);
     response = JSON.parse(xhr.responseText);
+    console.log(response);
     if (response.hasLeft) {
       // TODO: make left arrow clickable.
     } else {
       // TODO: Unclickable.
     }
-    document.getElementById("left_page").setAttribute("src", response.leftPng);
-    document.getElementById("right_page").setAttribute("src", response.rightPng);
+
+    if (response.leftPng === null) {
+      node.appendChild(getImageRow("image_center", response.singlePng));
+    } else {
+      document.getElementById("single_page").setAttribute("src", response.leftPng);
+      // document.getElementById("right_page").setAttribute("src", response.rightPng);
+      // document.getElementById("right_page").hidden = true;
+    }
     _currentPage = response.nextPage;
+
     if (response.hasRight) {
       // TODO: make right arrow clickable.
     } else {
@@ -97,14 +152,14 @@ function handleClick(_direction) {
 }
 
 function leftArrow() {
-  handleClick("-2");
+  handleClick("-1");
 }
 
 var leftarrow = document.getElementById("leftarrow");
 leftarrow.addEventListener("click", leftArrow, true);
 
 function rightArrow() {
-  handleClick("2");
+  handleClick("1");
 }
 
 var rightarrow = document.getElementById("rightarrow");

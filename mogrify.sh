@@ -4,5 +4,5 @@ if [[ ${1} == "" ]]; then
 fi
 
 mogrify \
-  -verbose -density 500 -resize 800 -format png \
-  ${1}
+  -verbose -density 500 -resize 800 -format png -flatten -background white \
+  "${1}"

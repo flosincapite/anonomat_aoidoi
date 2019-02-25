@@ -37,7 +37,7 @@ class Issue(_Issue):
         
         pages = []
         for file_name in os.listdir(issue_directory):
-          match = re.search(r'^(\d+)\.pdf$', file_name)
+          match = re.search(r'^(\d+)\.png$', file_name)
           if match:
             pages.append(match.groups()[0])
 
