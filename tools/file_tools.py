@@ -8,17 +8,13 @@ import fire
 
 
 def _number_pages(pdf_file):
-  return 4
-  # cmd = "pdfinfo %s | grep 'Pages' | awk '{print $2}'" % pdf_file
-  # return int(os.popen(cmd).read().strip())
+  cmd = "pdfinfo %s | grep 'Pages' | awk '{print $2}'" % pdf_file
+  return int(os.popen(cmd).read().strip())
 
 
 def _last_png(directory):
   numbers = set()
-  print('directory is:')
-  print(directory)
   for fname in os.listdir(directory):
-    print(fname)
     match = re.search(r'^(\d*)\.png$', fname)
     if match:
       numbers.add(int(match.groups()[0]))
@@ -66,7 +62,7 @@ class FileComponent(object):
     for fname in os.listdir(directory):
       match = re.search(r'^(\d*)\.png$', fname)
       if match:
-        all_pngs.append(match.groups()[0])
+        all_pngs.append(int(match.groups()[0]))
 
     page_numbers = sorted(all_pngs)
     if len(page_numbers) % 2:
@@ -79,7 +75,7 @@ class FileComponent(object):
       def _png_for(page_number):
         if page_number is None:
           return os.path.join(os.path.dirname(__file__), 'blank.png')
-        return os.path.join(directory, '%s.png' % page_number)
+        return os.path.join(directory, '%d.png' % page_number)
       page1 = _png_for(p1)
       page2 = _png_for(p2)
       new_file = next_file()
@@ -100,7 +96,7 @@ class FileComponent(object):
         print('Writing to ' + new_fname)
         command = 'convert %s %s -geometry +139 -composite %s' % (
             canvas, os.path.join(source, fname), os.path.join(dest, new_fname))
-        print(command)
+        # print(command)
         os.system(command)
 
   def process(self, config_file, do_sort=True):
