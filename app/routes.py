@@ -1,3 +1,5 @@
+import re
+
 import flask
 import flask_login
 
@@ -94,9 +96,13 @@ def next_page():
   request = flask.request.get_json()
   print('Request is:')
   print(request)
-  next_page = sum(map(
-    int,
-    [request.get('direction', 0), request.get('currentPage', 0)]))
+  dir_str = request.get('direction', '0')
+  sign, val = re.search(r'(\+|\-)?(\d*)', dir_str).groups()
+  curr_page = int(request.get('currentPage', 0))
+  if sign is not None:
+    next_page = curr_page + int(dir_str)
+  else:
+    next_page = int(val)
   
   the_issue = app_issue.Issue.from_meta(request['issue'])
 
@@ -119,6 +125,8 @@ def _file_exists(file_name):
 def single_page(issue_number, page_number):
   # TODO: Consult page number!
   print('issue_number is ' + str(issue_number))
+  the_issue = app_issue.Issue.from_meta(str(issue_number))
+
   this_page = int(page_number)
   prev_page = this_page - 1
   if prev_page <= 0:
@@ -136,7 +144,7 @@ def single_page(issue_number, page_number):
       left_page=_file_for(*map(str, [issue_number, left_number])),
       right_page=_file_for(*map(str, [issue_number, right_number])),
       issue_number=issue_number, prev_page=prev_page, next_page=next_page,
-      page_number=this_page)
+      page_number=this_page, toc=the_issue.toc)
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])

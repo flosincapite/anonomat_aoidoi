@@ -53,10 +53,18 @@
     clear: both;
     display: table;
   }
+
+  .toc-item {
+    color: #2222aa;
+  }
+
+  .toc-item:hover {
+    color: #8888aa;
+  }
 {% endblock %}
 
 {% block content %}
-  <div id="book">
+  <div id="book" style="float:left;width:79%">
     <div id="the_pages" class="page">
       {% if false %}
       <div class="row">
@@ -89,6 +97,11 @@
       </div>
     </div>
   </div>
+  {% if toc is not none %}
+    <div id="toc" style="float:left;width:15%">
+      {{ toc.markup }}
+    </div>
+  {% endif %}
 
 <script>
 
@@ -162,12 +175,21 @@ leftarrow.addEventListener("click", leftArrow, true);
 
 function rightArrow() {
   if (document.getElementById("rightarrow").getAttribute("data-canclick") == "true") {
-    handleClick("1");
+    handleClick("+1");
   }
 }
 
 var rightarrow = document.getElementById("rightarrow");
 rightarrow.addEventListener("click", rightArrow, true);
+
+{% if toc is not none %}
+{% for toc_id in toc.ids %}
+console.log("{{ toc_id }}");
+var toc_item = document.getElementById("{{ toc_id }}");
+toc_item.addEventListener(
+    "click", handleClick.bind(null, toc_item.getAttribute("data-page")), true);
+{% endfor %}
+{% endif %}
 
 </script>
 
