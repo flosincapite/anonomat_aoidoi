@@ -1,4 +1,5 @@
 import collections
+import flask
 
 
 _BlogPost = collections.namedtuple(
@@ -7,4 +8,7 @@ _BlogPost = collections.namedtuple(
 
 class BlogPost(_BlogPost):
   """Represents a single post on the blog's stream."""
-  pass
+
+  @property
+  def markup(self):
+    return flask.Markup(self.cdata)

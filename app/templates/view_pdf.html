@@ -84,8 +84,8 @@
 
     <div class="centered">
       <div class="child">
-        <span class="activearrow" id="leftarrow">&#8701;</span> |
-        <span class="activearrow" id="rightarrow">&#8702;</span>
+        <span class="activearrow" id="leftarrow" data-canclick="false">&#8701;</span> |
+        <span class="activearrow" id="rightarrow" data-canclick="true">&#8702;</span>
       </div>
     </div>
   </div>
@@ -124,9 +124,9 @@ function handleClick(_direction) {
     response = JSON.parse(xhr.responseText);
     console.log(response);
     if (response.hasLeft) {
-      // TODO: make left arrow clickable.
+      document.getElementById("leftarrow").setAttribute("data-canclick", "true");
     } else {
-      // TODO: Unclickable.
+      document.getElementById("leftarrow").setAttribute("data-canclick", "false");
     }
 
     if (response.leftPng === null) {
@@ -139,9 +139,9 @@ function handleClick(_direction) {
     _currentPage = response.nextPage;
 
     if (response.hasRight) {
-      // TODO: make right arrow clickable.
+      document.getElementById("rightarrow").setAttribute("data-canclick", "true");
     } else {
-      // TODO: Unclickable.
+      document.getElementById("rightarrow").setAttribute("data-canclick", "false");
     }
   };
 
@@ -152,14 +152,18 @@ function handleClick(_direction) {
 }
 
 function leftArrow() {
-  handleClick("-1");
+  if (document.getElementById("leftarrow").getAttribute("data-canclick") == "true") {
+    handleClick("-1");
+  }
 }
 
 var leftarrow = document.getElementById("leftarrow");
 leftarrow.addEventListener("click", leftArrow, true);
 
 function rightArrow() {
-  handleClick("1");
+  if (document.getElementById("rightarrow").getAttribute("data-canclick") == "true") {
+    handleClick("1");
+  }
 }
 
 var rightarrow = document.getElementById("rightarrow");
