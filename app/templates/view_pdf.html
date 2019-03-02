@@ -54,17 +54,55 @@
     display: table;
   }
 
+  .toc {
+    /* float:left; 
+    width: 12%; 
+    float: right; */
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #1a2c33;
+    color: #eeeeee;
+    transition: 0.3s;
+    width: 200px;
+    position: fixed;
+    height: 100%;
+  }
+
   .toc-item {
-    color: #2222aa;
+    /* color: #2222aa; */
+    color: #818181;
   }
 
   .toc-item:hover {
-    color: #8888aa;
+    /* color: #8888aa; */
+    color: #f1f1f1;
+  }
+
+  .toc .closebtn {
+    position: absolute;
+    top: 50%;
+    /* left: 100; */
+    float: right;
+    -ms-transform: translateX(-10px);
+    transform: translateX(-10px);
+    font-size: 36px;
+    color: #818181;
+    text-decoration: none;
+  }
+
+  .toc .closebtn:hover {
+    color: #f1f1f1;
+  }
+
+  #main {
+    transition: margin-right .5s;
+    margin-right: 200px;
   }
 {% endblock %}
 
 {% block content %}
-  <div id="book" style="float:left;width:79%">
+  <div id="book" style="float:left;width:100%">
     <div id="the_pages" class="page">
       {% if false %}
       <div class="row">
@@ -92,13 +130,19 @@
 
     <div class="centered">
       <div class="child">
-        <span class="activearrow" id="leftarrow" data-canclick="false">&#8701;</span> |
+        <span class="activearrow" id="leftarrow" data-canclick="false">&#8701;</span>
+        |
         <span class="activearrow" id="rightarrow" data-canclick="true">&#8702;</span>
       </div>
     </div>
   </div>
   {% if toc is not none %}
-    <div id="toc" style="float:left;width:15%">
+    <div class="toc" id="tableContents">
+      <a
+        href="javascript:void(0);" class="closebtn" id="tocArrow"
+        title="collapse TOC" onclick="closeToc()">
+        &#9654;
+      </a> 
       {{ toc.markup }}
     </div>
   {% endif %}
@@ -190,6 +234,31 @@ toc_item.addEventListener(
     "click", handleClick.bind(null, toc_item.getAttribute("data-page")), true);
 {% endfor %}
 {% endif %}
+
+function openToc() {
+  document.getElementById("tableContents").style.right = "0px";
+  document.getElementById("main").style.marginRight = "200px";
+  var obj = document.getElementById("main");
+  var arrow = document.getElementById("tocArrow");
+  arrow.innerHTML = "&#9654;";
+  arrow.style.transform = "translateX(-10px)";
+  arrow.style["-ms-transform"] = "translateX(-10px)";
+  arrow.removeEventListener("click", openToc);
+  arrow.addEventListener("click", closeToc);
+  arrow.title = "collapse TOC";
+}
+
+function closeToc() {
+  document.getElementById("tableContents").style.right = "-190px";
+  document.getElementById("main").style.marginRight = "10px";
+  var arrow = document.getElementById("tocArrow");
+  arrow.innerHTML = "&#9664;";
+  arrow.style.transform = "translateX(-20px)";
+  arrow.style["-ms-transform"] = "translateX(-20px)";
+  arrow.removeEventListener("click", closeToc);
+  arrow.addEventListener("click", openToc);
+  arrow.title = "expand TOC";
+}
 
 </script>
 
