@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import shutil
@@ -37,6 +38,12 @@ def _png_file_generator(new_directory, last_png):
 
 class FileComponent(object):
 
+  def __init__(self, loglevel='INFO'):
+    numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+      raise ValueError('Invalid log level: %s' % loglevel)
+    logging.basicConfig(level=numeric_level)
+
   def mogrify(self, pdf_glob, spread):
     if spread == 'double':
       width = 850
@@ -53,8 +60,8 @@ class FileComponent(object):
       command = (
           'pdftk "%s" cat %d output %s/%d.pdf' %
           (pdf_file, i + 1, output_directory, i + 1))
-      # print(command)
-      os.system(command)
+      if os.system(command):
+        raise Exception('Command `%s` failed.' % command)
 
   def montage(self, directory, new_directory):
     """Combines contiguous pages into a single .png."""
@@ -79,7 +86,7 @@ class FileComponent(object):
       page1 = _png_for(p1)
       page2 = _png_for(p2)
       new_file = next_file()
-      print('Montaging to ' + new_file)
+      logging.info('Montaging to ' + new_file)
       command = (
           'montage %s %s -border 2 -bordercolor black -geometry +0+0 %s' %
           (page1, page2, new_file))
@@ -93,7 +100,7 @@ class FileComponent(object):
       match = re.search(r'^(\d*)\.png$', fname)
       if match:
         new_fname = '%d.png' % (int(match.groups()[0]) + last_png)
-        print('Writing to ' + new_fname)
+        logging.info('Writing to ' + new_fname)
         command = 'convert %s %s -geometry +139 -composite %s' % (
             canvas, os.path.join(source, fname), os.path.join(dest, new_fname))
         # print(command)
@@ -103,6 +110,7 @@ class FileComponent(object):
     with open(config_file, 'r') as inp:
       config = yaml.load(inp)
 
+    logging.info('Making output directory.')
     output_directory = config['output_directory']
     try:
       os.makedirs(output_directory)
@@ -117,12 +125,17 @@ class FileComponent(object):
       for pdf in config.get('inputs', []):
         fname = pdf['file']
         spread = pdf['format']
-        newdir = tempfile.mkdtemp()
+        newdir = os.path.join(output_directory, 'tmp')
+        tempdirs.append(newdir)
+        os.mkdir(newdir)
+        logging.info('Making temporary directory %s.' % newdir)
         
         # Splits original PDF into single-page PDFs.
+        logging.info('Separating pages.')
         self.separate_pages(fname, newdir)
 
         # Converts PDFs into PNGs.
+        logging.info('Mogrifying.')
         self.mogrify(
             os.path.join(newdir, '*.pdf'),
             spread=spread)
@@ -133,6 +146,8 @@ class FileComponent(object):
         else:
           assert spread == 'single'
           self.rename_pngs(newdir, output_directory)
+
+        shutil.rmtree(newdir)
 
     finally:
       for tempdir in tempdirs:

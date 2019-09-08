@@ -1,0 +1,4 @@
+# YAML_CONFIG=app/data/issue_configs/issue_2.yaml
+python3 tools/file_tools.py process ${YAML_CONFIG}
+
+# Then edit toc.yaml in the new folder.
