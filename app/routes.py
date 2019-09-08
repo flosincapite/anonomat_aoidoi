@@ -172,3 +172,13 @@ def login(error=None):
   
   return flask.render_template(
       'login.html', page_title='Login', login_form=form)
+
+
+@app.wsgi_app.route('/blog_post', methods=['GET'])
+def blog_post_template():
+  pass
+
+
+@app.wsgi_app.route('/blog_post', methods=['GET'])
+def new_post():
+  pass

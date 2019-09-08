@@ -1,5 +1,5 @@
 import flask
-import flask_cors
+# import flask_cors
 import flask_login
 # import flask_bootstrap
 
