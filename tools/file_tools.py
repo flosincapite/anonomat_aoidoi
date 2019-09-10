@@ -94,7 +94,7 @@ class FileComponent(object):
       os.system(command)
 
   def rename_pngs(self, source, dest):
-    canvas = '/home/cory/projects/online_journal/tools/canvas.png'
+    canvas = '/home/cory/projects/middlelost/tools/canvas.png'
     last_png = _last_png(dest)
     for fname in os.listdir(source):
       match = re.search(r'^(\d*)\.png$', fname)
@@ -125,7 +125,7 @@ class FileComponent(object):
       for pdf in config.get('inputs', []):
         fname = pdf['file']
         spread = pdf['format']
-        newdir = os.path.join(output_directory, 'tmp')
+        newdir = os.path.join(output_directory, 'tmp%d' % len(tempdirs))
         tempdirs.append(newdir)
         os.mkdir(newdir)
         logging.info('Making temporary directory %s.' % newdir)
@@ -147,11 +147,12 @@ class FileComponent(object):
           assert spread == 'single'
           self.rename_pngs(newdir, output_directory)
 
-        shutil.rmtree(newdir)
-
     finally:
       for tempdir in tempdirs:
-        shutil.rmtree(tempdir)
+        try:
+          shutil.rmtree(tempdir)
+        except:
+          pass
 
     with open(os.path.join(output_directory, 'meta.yaml'), 'w') as outp:
       yaml.dump(
