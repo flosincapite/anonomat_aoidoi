@@ -106,10 +106,15 @@ def next_page():
   
   the_issue = app_issue.Issue.from_meta(request['issue'])
 
+  message = None
+  if next_page in the_issue.message_pages:
+    message = 'HELLO'
+
   response_json = {
     'hasLeft': next_page > int(the_issue.lowest),
     'hasRight': next_page < int(the_issue.highest),
     'nextPage': next_page,
+    'message': message,
     'leftPng': _file_for(request['issue'], next_page),
     'rightPng': _file_for(request['issue'], next_page + 1)}
   print(response_json)
@@ -135,6 +140,10 @@ def single_page(issue_number, page_number):
   if not _file_exists(this_page):
     next_page = -1
 
+  message = None
+  if next_page in the_issue.message_pages:
+    message = the_issue.message
+
   # Determine page numbers.
   left_number = this_page 
   right_number = left_number + 1
@@ -143,6 +152,7 @@ def single_page(issue_number, page_number):
       'view_pdf.html', page_title='Issue %s' % issue_number,
       left_page=_file_for(*map(str, [issue_number, left_number])),
       right_page=_file_for(*map(str, [issue_number, right_number])),
+      message=message,
       issue_number=issue_number, prev_page=prev_page, next_page=next_page,
       page_number=this_page, toc=the_issue.toc)
 

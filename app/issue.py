@@ -11,7 +11,9 @@ from app import toc
 
 
 _Issue = collections.namedtuple(
-    'Issue', ['title', 'pages', 'number', 'lowest', 'highest', 'cover', 'toc'])
+    'Issue', [
+      'title', 'pages', 'number', 'lowest', 'highest', 'cover', 'toc',
+      'message_pages', 'message'])
 
 
 _CACHE = {}
@@ -52,10 +54,21 @@ class Issue(_Issue):
 
         pages = list(map(str, sorted(map(int, pages))))
 
+        if 'topbars' in config:
+          first, last = map(int, config['topbars']['range'].split('-'))
+          message_pages = set(range(first, last + 1))
+          message = config['topbars']['message']
+        else:
+          message_pages = set([])
+          message = None
+
         the_issue = Issue(
             title=config['title'], pages=pages, number=number, lowest=pages[0],
-            highest=pages[-1], cover=config['cover'], toc=toc_obj)
+            highest=pages[-1], cover=config['cover'], toc=toc_obj,
+            message_pages=message_pages, message=message)
+
         _CACHE[number] = the_issue
+
     return _CACHE[number]
 
   @classmethod
