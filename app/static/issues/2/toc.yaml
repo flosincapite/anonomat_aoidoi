@@ -3,26 +3,36 @@
   - - Intro
     - !!python/object/apply:collections.OrderedDict
       - - ["Justlost: Editors' Reflections", 4]
+  - - Flowers in the Night
+    - !!python/object/apply:collections.OrderedDict
+      - - [Marc Scroggins, 10]
+        - [July Giguère, 18]
   - - Map and Lyric Frame
     - !!python/object/apply:collections.OrderedDict
-      - - [Laura Carter, 10]
-        - [Cory Massaro, 19]
-        - [Ruth Lepson, 24]
-        - [Nat Schmeling, 31]
+      - - [Laura Carter, 24]
+        - [Cory Massaro, 33]
+        - [Ruth Lepson, 38]
+        - [Nat Schmeling, 45]
+  - - East Durham
+    - !!python/object/apply:collections.OrderedDict
+      - - [Students from Carver Hill School with David Need, 50]
   - - Cathedral
     - !!python/object/apply:collections.OrderedDict
-      - - [Gail Goers, 37]
-        - [Jackson Safford, 45]
+      - - [Gail Goers, 63]
+        - [Jackson Safford, 71]
+  - - A Necessary Distance
+    - !!python/object/apply:collections.OrderedDict
+      - - [Gail Goers, 75]
   - - The Trouble with Classicists ...
     - !!python/object/apply:collections.OrderedDict
-      - - [Aaron Vansteinberg, 50]
-        - [Ana Božičevič, 55]
-        - [Laynie Browne, 58]
-        - [Scott C. Smith, 62]
-        - [Patrick Pritchett, 67]
+      - - [Aaron Vansteinberg, 93]
+        - [Ana Božičevič, 98]
+        - [Laynie Browne, 101]
+        - [Scott C. Smith, 105]
+        - [Patrick Pritchett, 110]
   - - Fictions and Serials
     - !!python/object/apply:collections.OrderedDict
-      - - [Mary Jane Gore, 75]
-        - [Laynie Brown, 83]
-        - [David Need, 90]
-  - [Picture Credits & Contributor Notes, 103]
+      - - [Mary Jane Gore, 118]
+        - [Laynie Brown, 126]
+        - [David Need, 133]
+  - [Picture Credits & Contributor Notes, 146]
