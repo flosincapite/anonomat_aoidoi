@@ -1,3 +1,5 @@
+import sqlite3
+
 import flask
 # import flask_cors
 import flask_login
@@ -15,13 +17,10 @@ wsgi_app = flask.Flask(__name__)
 wsgi_app.config.from_object(config.Config)
 # bootstrap = flask_bootstrap.Bootstrap(wsgi_app)
 
+wsgi_app.logger.error(f'DATABASE is {wsgi_app.config["DATABASE"]}')
 
-blog_db = database.YamlDatabase(
-    wsgi_app.config['BLOG_DIRECTORY'], blog_post.BlogPost)
-
-
-user_db = database.YamlDatabase(
-    wsgi_app.config['USER_DIRECTORY'], user.User, key_func=lambda u: u.name)
+# check_same_thread unnecessary because we only read from this database.
+db = sqlite3.connect(wsgi_app.config['DATABASE'], check_same_thread=False)
 
 
 login_manager = flask_login.LoginManager()

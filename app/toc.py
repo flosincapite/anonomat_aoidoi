@@ -10,7 +10,7 @@ _Toc = collections.namedtuple('TOC', ['markup', 'ids'])
 def get_toc(config_file):
   try:
     with open(config_file, 'r') as inp:
-      config = yaml.load(inp)
+      config = yaml.load(inp, Loader=yaml.Loader)
   except FileNotFoundError:
     return None
     

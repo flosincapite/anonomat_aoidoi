@@ -9,9 +9,14 @@ def create_tables(connection):
           id INTEGER PRIMARY KEY AUTOINCREMENT, title text, cover_png text,
           table_of_contents text);''')
   c.execute('''
+      CREATE TABLE pages (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, issue_number int,
+          plate_png text, author int, title text, contents_html text,
+          FOREIGN KEY(author) REFERENCES authors(id));''')
+  c.execute('''
       CREATE TABLE authors (
           id INTEGER PRIMARY KEY AUTOINCREMENT, issue_number int,
-          plate_png text, name text,
+          name text,
           FOREIGN KEY(issue_number) REFERENCES issues(id));''')
   c.execute('''
       CREATE TABLE poems (
@@ -27,6 +32,7 @@ def populate_database(meta_dict, table_of_contents, connection):
   toc_string = json.dumps(table_of_contents)
   
   c = connection.cursor()
+  print(f'INSERTING issue {issue}.')
   c.execute(
       'INSERT INTO issues (id, title, cover_png, table_of_contents) '
       'values (?, ?, ?, ?);',
@@ -45,3 +51,28 @@ def populate_database(meta_dict, table_of_contents, connection):
             'INSERT INTO poems (author, title, contents_html) '
             'values (?, ?, ?)',
             (author_id, poem['title'], poem['contents_html']))
+  connection.commit()
+
+
+class DatabaseFrontend(object):
+
+  def __init__(self, database_file):
+    self._connection = sqlite3.connect(database_file)
+
+  def create_database(self):
+    create_tables(self._connection)
+
+  def populate_database(self, meta_file, toc_file):
+    with open(meta_file, 'r') as inp:
+      meta_dict = yaml.load(inp)
+    with open(toc_file, 'r') as inp:
+      toc_dict = yaml.load(inp, Loader=yaml.Loader)
+    populate_database(meta_dict, toc_dict, self._connection)
+
+
+if __name__ == '__main__':
+  import collections
+  import yaml
+  import fire
+
+  fire.Fire(DatabaseFrontend)

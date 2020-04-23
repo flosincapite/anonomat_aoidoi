@@ -31,13 +31,15 @@ def _toc_for(directory):
 class Issue(_Issue):
   """Represents a single issue of the journal."""
   
-  DATA_DIRECTORY = app.wsgi_app.config['DATABASE_DIRECTORY']
+  _DATABASE = app.db
+  _ISSUE_DIRECTORY = app.wsgi_app.config['ISSUE_DIRECTORY']
 
   @classmethod
   def from_meta(cls, number):
+    number = str(number)
     if number not in _CACHE:
       with _CACHE_LOCK:
-        issue_directory = os.path.join(cls.DATA_DIRECTORY, number)
+        issue_directory = os.path.join(cls._ISSUE_DIRECTORY, number)
 
         meta_file = _meta_for(issue_directory)
         with open(meta_file, 'r') as inp:
@@ -73,9 +75,9 @@ class Issue(_Issue):
 
   @classmethod
   def list(cls):
-    issue_numbers = [
-        subdir for subdir in os.listdir(cls.DATA_DIRECTORY)
-        if os.path.isfile(_meta_for(os.path.join(cls.DATA_DIRECTORY, subdir)))]
+    c = cls._DATABASE.cursor()
+    c.execute('SELECT id FROM issues')
+    issue_numbers = [number for number, in c.fetchall()]
     issues = []
     for issue in sorted(issue_numbers):
       issues.append(cls.from_meta(issue))

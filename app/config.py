@@ -10,6 +10,7 @@ def _rooted(location):
 
 class Config(object):
   SECRET_KEY = os.environ.get('ANONOMAT_KEY') or 'anonomat_aoidoi'
-  DATABASE_DIRECTORY = _rooted('static/issues')
+  DATABASE = _rooted('database.db')
+  ISSUE_DIRECTORY = _rooted('static/issues')
   BLOG_DIRECTORY = _rooted('static/blog_posts')
   USER_DIRECTORY = _rooted('data/users')
