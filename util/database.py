@@ -11,8 +11,8 @@ def create_tables(connection):
   c.execute('''
       CREATE TABLE pages (
           id INTEGER PRIMARY KEY AUTOINCREMENT, issue_number int,
-          plate_png text, author int, title text, contents_html text,
-          FOREIGN KEY(author) REFERENCES authors(id));''')
+          page_number int, author text, plate_jpg text, title text, contents_html text,
+          FOREIGN KEY(issue_number) REFERENCES issues(id));''')
   c.execute('''
       CREATE TABLE authors (
           id INTEGER PRIMARY KEY AUTOINCREMENT, issue_number int,
@@ -32,25 +32,33 @@ def populate_database(meta_dict, table_of_contents, connection):
   toc_string = json.dumps(table_of_contents)
   
   c = connection.cursor()
-  print(f'INSERTING issue {issue}.')
   c.execute(
       'INSERT INTO issues (id, title, cover_png, table_of_contents) '
       'values (?, ?, ?, ?);',
       (issue, title, cover_png, toc_string))
 
+  def _pages():
+    page = 0
+    while True:
+      page += 1
+      yield page
+
+  page = _pages()
   for section in table_of_contents.get('sections', []):
     for author in section.get('authors', []):
       c.execute(
-          'INSERT INTO authors (issue_number, plate_png, name) '
-          'values (?, ?, ?)',
-          (issue, author['plate_png'], author['name']))
+          'INSERT INTO pages (issue_number, page_number, plate_jpg, author) '
+          'values (?, ?, ?, ?)',
+          (issue, next(page), author['plate_jpg'], author['name']))
 
-      author_id = c.lastrowid
       for poem in author.get('poems', []):
         c.execute(
-            'INSERT INTO poems (author, title, contents_html) '
-            'values (?, ?, ?)',
-            (author_id, poem['title'], poem['contents_html']))
+            'INSERT INTO pages '
+            '(issue_number, page_number, title, contents_html, author) '
+            'values (?, ?, ?, ?, ?)',
+            (
+                issue, next(page), poem['title'], poem['contents_html'],
+                author['name']))
   connection.commit()
 
 

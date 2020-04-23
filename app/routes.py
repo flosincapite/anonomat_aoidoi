@@ -1,12 +1,12 @@
 import re
 
-import cachetools
 import flask
 import flask_login
 
 import app
 from app import blog_post
-from app import issue as app_issue
+from app import issue
+from app import page
 from app import submit_form
 from app.login import login_form
 from app.login import user
@@ -28,10 +28,6 @@ SUBMIT:
 BLOG:
   - displays posts by select writers
 """
-
-
-ISSUE_TO_PAGES = cachetools.TTLCache(maxsize=10, ttl=3600)
-CURRENT_ISSUE = []
 
 
 class _DummyUser(object):
@@ -81,7 +77,7 @@ def submit_submit():
 @app.wsgi_app.route('/issues')
 def issues():
   # TODO: Import here: awful hack. Figure out how to generate URLs properly.
-  issues = app_issue.Issue.list()
+  issues = issue.Issue.list()
   return flask.render_template(
       'issues.html', page_title='Issues', issues=issues)
 
@@ -105,7 +101,7 @@ def next_page():
   else:
     next_page = int(val)
   
-  the_issue = app_issue.Issue.from_meta(request['issue'])
+  the_issue = issue.Issue.from_meta(request['issue'])
 
   message = None
   if next_page in the_issue.message_pages:
@@ -127,35 +123,50 @@ def _file_exists(file_name):
   return True
 
 
-@app.wsgi_app.route('/viewer/<re(\'(\w+)\'):issue_number>/<re(\'(\d+)\'):page_number>')
+@app.wsgi_app.route('/viewer/<re(\'(\d+)\'):issue_number>/<re(\'(\d+)\'):page_number>')
 def single_page(issue_number, page_number):
   # TODO: Consult page number!
-  print('issue_number is ' + str(issue_number))
-  the_issue = app_issue.Issue.from_meta(str(issue_number))
+  issue_number, page_number = map(int, (issue_number, page_number))
+  the_issue = issue.Issue.create(issue_number)
 
-  this_page = int(page_number)
-  prev_page = this_page - 1
-  if prev_page <= 0:
-    prev_page = -1
-  next_page = this_page + 1
-  if not _file_exists(this_page):
-    next_page = -1
+  if page_number <= 0:
+    left_number = None
+  else:
+    left_number = page_number - 1
+
+  if page_number >= the_issue.highest:
+    right_number = None
+  else:
+    right_number = page_number + 1
+
+  this_page = page.Page.list(issue_number, page_number, page_number)[0]
+  app.wsgi_app.logger.error(this_page)
 
   message = None
   if next_page in the_issue.message_pages:
     message = the_issue.message
 
-  # Determine page numbers.
-  left_number = this_page 
-  right_number = left_number + 1
-  print(left_number, right_number)
-  return flask.render_template(
-      'view_pdf.html', page_title='Issue %s' % issue_number,
-      left_page=_file_for(*map(str, [issue_number, left_number])),
-      right_page=_file_for(*map(str, [issue_number, right_number])),
-      message=message,
-      issue_number=issue_number, prev_page=prev_page, next_page=next_page,
-      page_number=this_page, toc=the_issue.toc)
+  if this_page.contents_html is not None:
+    return flask.render_template(
+        'single_poem.html',
+        page_title=f'Issue {issue_number}',
+        include_contents=this_page.contents_html,
+        message=message,
+        issue_number=issue_number,
+        prev_page=left_number,
+        next_page=right_number,
+        toc=the_issue.toc)
+  else:
+    assert this_page.image is not None
+    return flask.render_template(
+        'author_image.html',
+        page_title=f'Issue {issue_number}',
+        include_contents=this_page.image,
+        message=message,
+        issue_number=issue_number,
+        prev_page=left_number,
+        next_page=right_number,
+        toc=the_issue.toc)
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])

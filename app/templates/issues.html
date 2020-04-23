@@ -31,6 +31,7 @@ Issue #{{ issue.number }}
 <br />
 {{ issue.title }}
 <br />
+
 <a href="{{ url_for(
   'single_page', issue_number=issue.number, page_number=issue.lowest) }}">
   <img

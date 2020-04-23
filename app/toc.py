@@ -18,6 +18,14 @@ def get_toc(config_file):
   ids = []
 
   def _traverse_toc(d):
+    if not hasattr(d, 'items'):
+      lines.append('<ul style="list-style-type:none;">')
+      lines.append(
+          '<li><span class="toc-item" id="%s" data-page="%d">%s</span></li>' % (
+              (2, 0, '')))
+      ids.append(2)
+      lines.append('</ul>')
+      return
     lines.append('<ul style="list-style-type:none;">')
 
     for key, val in d.items():
@@ -36,3 +44,4 @@ def get_toc(config_file):
   _traverse_toc(config)
 
   return _Toc(markup=flask.Markup('\n'.join(lines)), ids=ids)
+
