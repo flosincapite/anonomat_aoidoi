@@ -1,5 +1,6 @@
 import re
 
+import cachetools
 import flask
 import flask_login
 
@@ -29,7 +30,7 @@ BLOG:
 """
 
 
-ISSUE_TO_PAGES = {}
+ISSUE_TO_PAGES = cachetools.TTLCache(maxsize=10, ttl=3600)
 CURRENT_ISSUE = []
 
 
