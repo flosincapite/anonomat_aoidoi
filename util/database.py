@@ -1,60 +1,47 @@
-import os
-import random
-import yaml
+import json
+import sqlite3
 
 
-class YamlDatabase(object):
+def create_tables(connection):
+  c = connection.cursor()
+  c.execute('''
+      CREATE TABLE issues (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, title text, cover_png text,
+          table_of_contents text);''')
+  c.execute('''
+      CREATE TABLE authors (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, issue_number int,
+          plate_png text, name text,
+          FOREIGN KEY(issue_number) REFERENCES issues(id));''')
+  c.execute('''
+      CREATE TABLE poems (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, author int, title text,
+          contents_html text, FOREIGN KEY(author) REFERENCES authors(id));''')
+  connection.commit()
 
-  def __init__(
-      self, directory, data_type, initializer=None, key_func=None,
-      serialize=None):
-    self._directory = directory
-    if initializer is None:
-      initializer = lambda yaml_dict: data_type(**yaml_dict)
-    self._initializer = initializer
-    self._key_func = key_func
-    if serialize is None:
-      serialize = lambda entity: entity._asdict()
-    self._serialize = serialize
 
-  @property
-  def key_func(self):
-    return self._key_func
+def populate_database(meta_dict, table_of_contents, connection):
+  cover_png = meta_dict.get('cover')
+  title = meta_dict.get('title')
+  issue = meta_dict.get('issue')
+  toc_string = json.dumps(table_of_contents)
+  
+  c = connection.cursor()
+  c.execute(
+      'INSERT INTO issues (id, title, cover_png, table_of_contents) '
+      'values (?, ?, ?, ?);',
+      (issue, title, cover_png, toc_string))
 
-  @key_func.setter
-  def key_func(self, key_func):
-    self._key_func = key_func
+  for section in table_of_contents.get('sections', []):
+    for author in section.get('authors', []):
+      c.execute(
+          'INSERT INTO authors (issue_number, plate_png, name) '
+          'values (?, ?, ?)',
+          (issue, author['plate_png'], author['name']))
 
-  def _entities_from_file(self, file_name):
-    with open(os.path.join(self._directory, file_name), 'r') as inp:
-      things = yaml.load(inp)
-      return [self._initializer(e) for e in things]
-      # return map(self._initializer, yaml.load(inp))
-
-  def get_all(self):
-    result = []
-    for file_name in os.listdir(self._directory):
-      result.extend(
-          self._entities_from_file(os.path.join(self._directory, file_name)))
-    return result
-
-  def get(self, key):
-    # TODO: Create a proper database!!!
-    if self._key_func is None:
-      raise ValueError('Database needs a key_func to index by keys.')
-    for entity in self.get_all():
-      if self.key_func(entity) == key:
-        return entity
-    return None
-        
-  def put(self, entity):
-    # TODO: This is stupid.
-    if self._serialize is None:
-      raise ValueError('Database needs a serialize function to put entries.')
-    file_name = os.path.join(
-        self._directory, random.choice(os.listdir(self._directory)))
-    elements = list(self._entities_from_file(file_name))
-    elements.append(entity)
-
-    with open(file_name, 'w') as outp:
-      yaml.dump(list(map(self._serialize, elements)), outp)
+      author_id = c.lastrowid
+      for poem in author.get('poems', []):
+        c.execute(
+            'INSERT INTO poems (author, title, contents_html) '
+            'values (?, ?, ?)',
+            (author_id, poem['title'], poem['contents_html']))
