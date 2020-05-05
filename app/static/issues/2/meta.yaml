@@ -1,6 +1,7 @@
 {
   cover: issues/2/cover.png,
   title: Issue 2,
+  issue: 2,
   topbars: {
     range: 18-22,
     message: Original French can be found <a href=google.com>here</a>.
