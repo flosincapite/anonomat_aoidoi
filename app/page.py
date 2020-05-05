@@ -9,18 +9,16 @@ class Page(object):
   _DATABASE = app.db
   
   def __init__(
-      self, issue, page_number, author, image=None, title=None,
-      contents_html=None, page_type=None, topbar=None):
-    self._author = author
+      self, issue, page_number, author=None, title=None, page_type=None,
+      contents_html=None, image=None, background_image=None, topbar=None):
     self._issue = issue
     self._page_number = page_number
-    self._image = image
-    self._contents_html = contents_html
+    self._author = author
+    self._title = title
     self._type = page_type
-
-  @property
-  def author(self):
-    return self._author
+    self._contents_html = contents_html
+    self._image = image
+    self._background_image = background_image
 
   @property
   def issue(self):
@@ -31,16 +29,28 @@ class Page(object):
     return self._page_number
 
   @property
-  def image(self):
-    return self._image
+  def author(self):
+    return self._author
+
+  @property
+  def title(self):
+    return self._title
+
+  @property
+  def type(self):
+    return self._type
 
   @property
   def contents_html(self):
     return self._contents_html
 
   @property
-  def type(self):
-    return self._type
+  def image(self):
+    return self._image
+
+  @property
+  def background_image(self):
+    return self._background_image
 
   def __str__(self):
     return f'Page with author {self._author} issue {self._issue} page_number {self._page_number} image {self._image} contents_html {self._contents_html}'
@@ -48,9 +58,9 @@ class Page(object):
   @classmethod
   def list(cls, issue_number, lowest_page, highest_page):
     c = cls._DATABASE.cursor()
-    print(c.execute('PRAGMA table_info(pages)').fetchall())
     c.execute(
-        'SELECT page_number, author, image, title, contents_html, type '
-        'FROM pages WHERE page_number >= ? AND page_number <= ?', 
-        (lowest_page, highest_page))
+        'SELECT page_number, author, title, type, contents_html, image, background_image '
+        'FROM pages WHERE page_number >= ? AND page_number <= ? '
+        'AND issue_number = ?',
+        (lowest_page, highest_page, issue_number))
     return [Page(*((issue_number,) + row)) for row in c.fetchall()]

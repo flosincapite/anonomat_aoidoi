@@ -134,8 +134,8 @@ def _render_author_page(*args):
 def _render_single_poem(the_issue, this_page, message):
     return flask.render_template(
         'single_poem.html',
-        page_title=f'Issue {the_issue.number}',
-        include_contents=this_page.contents_html,
+        page_title=this_page.title or "Poem",
+        page_html=this_page.contents_html,
         message=message,
         issue_number=the_issue.number,
         prev_page=this_page.page_number - 1,
@@ -146,7 +146,7 @@ def _render_single_poem(the_issue, this_page, message):
 def _render_single_image(the_issue, this_page, message):
     return flask.render_template(
         'author_image.html',
-        page_title=f'Issue {the_issue.number}',
+        page_title=this_page.title or "Image",
         include_contents=this_page.image,
         message=message,
         issue_number=the_issue.number,

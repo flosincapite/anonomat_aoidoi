@@ -3,7 +3,7 @@ import os
 import sqlite3
 
 
-def create_tables(connection):
+def _create_tables(connection):
     c = connection.cursor()
     c.execute(
         """
@@ -22,7 +22,7 @@ def create_tables(connection):
     connection.commit()
 
 
-def populate_database(meta_dict, table_of_contents, connection):
+def _populate_database(meta_dict, table_of_contents, connection):
     # TODO: meta_dict and table_of_contents no longer need to be separate.
     cover_png = meta_dict.get("cover")
     title = meta_dict.get("title")
@@ -109,14 +109,18 @@ class DatabaseFrontend:
         self._connection = sqlite3.connect(database_file)
 
     def create_database(self):
-        create_tables(self._connection)
+        _create_tables(self._connection)
 
     def populate_database(self, meta_file, toc_file):
         with open(meta_file, "r") as inp:
             meta_dict = yaml.load(inp)
         with open(toc_file, "r") as inp:
             toc_dict = yaml.load(inp, Loader=yaml.Loader)
-        populate_database(meta_dict, toc_dict, self._connection)
+        _populate_database(meta_dict, toc_dict, self._connection)
+
+    def create_and_populate_database(self, meta_file, toc_file):
+        self.create_database()
+        self.populate_database(meta_file, toc_file)
 
 
 if __name__ == "__main__":
