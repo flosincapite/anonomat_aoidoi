@@ -63,7 +63,7 @@ def populate_database(meta_dict, table_of_contents, connection):
   connection.commit()
 
 
-class DatabaseFrontend(object):
+class DatabaseFrontend:
 
   def __init__(self, database_file):
     self._connection = sqlite3.connect(database_file)
