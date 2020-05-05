@@ -26,6 +26,7 @@ def create_tables(connection):
 
 
 def populate_database(meta_dict, table_of_contents, connection):
+  # TODO: meta_dict and table_of_contents no longer need to be separate.
   cover_png = meta_dict.get('cover')
   title = meta_dict.get('title')
   issue = meta_dict.get('issue')

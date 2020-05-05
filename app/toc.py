@@ -44,4 +44,3 @@ def get_toc(config_file):
   _traverse_toc(config)
 
   return _Toc(markup=flask.Markup('\n'.join(lines)), ids=ids)
-
