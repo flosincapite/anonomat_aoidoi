@@ -54,6 +54,8 @@ def populate_database(meta_dict, table_of_contents, connection):
             )
         for author in section.get("authors", []):
             author_background = author.get("image", "")
+            if author_background:
+                author_background = os.path.join(base_dir, author_background)
             c.execute(
                 "INSERT INTO pages (issue_number, page_number, image, author, type) "
                 "values (?, ?, ?, ?, ?)",
@@ -70,7 +72,7 @@ def populate_database(meta_dict, table_of_contents, connection):
                             issue,
                             next(page),
                             poem["title"],
-                            poem["contents_html"],
+                            os.path.join(base_dir, poem["contents_html"]),
                             author["name"],
                             author_background,
                             "single_poem"
@@ -87,7 +89,7 @@ def populate_database(meta_dict, table_of_contents, connection):
                             next(page),
                             poem.get("title", ""),
                             author["name"],
-                            poem["image"],
+                            os.path.join(poem["image"]),
                             "single_image"
                         ),
                     )

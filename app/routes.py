@@ -123,6 +123,46 @@ def _file_exists(file_name):
   return True
 
 
+def _render_section_head(*args):
+  pass
+
+  
+def _render_author_page(*args):
+  pass
+
+
+def _render_single_poem(the_issue, this_page, message):
+    return flask.render_template(
+        'single_poem.html',
+        page_title=f'Issue {the_issue.number}',
+        include_contents=this_page.contents_html,
+        message=message,
+        issue_number=the_issue.number,
+        prev_page=this_page.page_number - 1,
+        next_page=this_page.page_number + 1,
+        toc=the_issue.toc)
+
+
+def _render_single_image(the_issue, this_page, message):
+    return flask.render_template(
+        'author_image.html',
+        page_title=f'Issue {the_issue.number}',
+        include_contents=this_page.image,
+        message=message,
+        issue_number=the_issue.number,
+        prev_page=this_page.page_number - 1,
+        next_page=this_page.page_number + 1,
+        toc=the_issue.toc)
+
+
+_RENDER_METHODS = {
+    'section_head': _render_section_head,
+    'author_page': _render_author_page,
+    'single_poem': _render_single_poem,
+    'single_image': _render_single_image,
+}
+
+
 @app.wsgi_app.route('/viewer/<re(\'(\d+)\'):issue_number>/<re(\'(\d+)\'):page_number>')
 def single_page(issue_number, page_number):
   # TODO: Consult page number!
@@ -139,6 +179,7 @@ def single_page(issue_number, page_number):
   else:
     right_number = page_number + 1
 
+  # TODO: Get left and right pages, too.
   this_page = page.Page.list(issue_number, page_number, page_number)[0]
   app.wsgi_app.logger.error(this_page)
 
@@ -146,27 +187,7 @@ def single_page(issue_number, page_number):
   if next_page in the_issue.message_pages:
     message = the_issue.message
 
-  if this_page.contents_html is not None:
-    return flask.render_template(
-        'single_poem.html',
-        page_title=f'Issue {issue_number}',
-        include_contents=this_page.contents_html,
-        message=message,
-        issue_number=issue_number,
-        prev_page=left_number,
-        next_page=right_number,
-        toc=the_issue.toc)
-  else:
-    assert this_page.image is not None
-    return flask.render_template(
-        'author_image.html',
-        page_title=f'Issue {issue_number}',
-        include_contents=this_page.image,
-        message=message,
-        issue_number=issue_number,
-        prev_page=left_number,
-        next_page=right_number,
-        toc=the_issue.toc)
+  return _RENDER_METHODS[this_page.type](the_issue, this_page, message)  
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])
