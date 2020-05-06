@@ -47,6 +47,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
         base_dir = section.get("base_dir", "")
         cover = section.get("cover")
         if cover is not None:
+            cover = os.path.join(base_dir, cover)
             c.execute(
                 "INSERT INTO pages (issue_number, page_number, image, title, type) "
                 "values (?, ?, ?, ?, ?)",
