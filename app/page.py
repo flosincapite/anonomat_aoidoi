@@ -58,9 +58,16 @@ class Page(object):
   @classmethod
   def list(cls, issue_number, lowest_page, highest_page):
     c = cls._DATABASE.cursor()
-    c.execute(
-        'SELECT page_number, author, title, type, contents_html, image, background_image '
-        'FROM pages WHERE page_number >= ? AND page_number <= ? '
-        'AND issue_number = ?',
-        (lowest_page, highest_page, issue_number))
-    return [Page(*((issue_number,) + row)) for row in c.fetchall()]
+    result = []
+    for page in range(lowest_page, highest_page + 1):
+        if page not in cls._CACHE:
+            c.execute(
+                'SELECT page_number, author, title, type, contents_html, image, background_image '
+                'FROM pages WHERE page_number = ? AND issue_number = ?',
+                (page, issue_number))
+            rows = c.fetchall()
+            if not rows:
+                continue
+            cls._CACHE[page] = Page(*((issue_number,) + rows[0]))
+        result.append(cls._CACHE[page])
+    return result
