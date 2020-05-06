@@ -128,12 +128,33 @@ def _file_exists(file_name):
     return True
 
 
-def _render_section_head(*args):
-    pass
+def _render_section_head(the_issue, page_number, pages, message):
+    # TODO: Implement this.
+    this_page = pages[page_number]
+    return flask.render_template(
+        "section_head.html",
+        page_title=f"Section Head: {this_page.title}",
+        message=message,
+        include_contents=this_page.image,
+        issue_number=the_issue.number,
+        prev_page=pages.get(page_number - 1),
+        next_page=pages.get(page_number + 1),
+        toc=the_issue.toc,
+    )
 
-
-def _render_author_page(*args):
-    pass
+def _render_author_page(the_issue, page_number, pages, message):
+    # TODO: Implement this.
+    this_page = pages[page_number]
+    return flask.render_template(
+        "author_image.html",
+        page_title=f"Unimplemented author page for {pages[page_number].author}",
+        include_contents=this_page.image,
+        message=message,
+        issue_number=the_issue.number,
+        prev_page=pages.get(page_number - 1),
+        next_page=pages.get(page_number + 1),
+        toc=the_issue.toc,
+    )
 
 
 def _render_single_poem(the_issue, page_number, pages, message):
