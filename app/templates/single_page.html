@@ -1,20 +1,67 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block additional_styles %}
+<style>
 
-<div id="title">{{ title }}</div>
+.grid-container {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    margin: 10%;
+}
 
-{% block main %}
+.content-grid {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    word-wrap: break-all;
+    word-break: break-all;
+}
+
+.nav-grid-left {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    text-align: center;
+}
+
+.nav-grid-right {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    text-align: center;
+}
+
+p { white-space: pre-wrap; word-break: break-word; word-wrap: break-word; }
 {% endblock %}
 
-<div id="navigation">
-    <div id="previous_page">
-        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page) }}">
-            Previous Page
-        </a>
-        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=next_page) }}">
-            Next Page
-        </a>
+{% block content %}
+
+<div id="title" style="text-align: center; margin-top: 10%; margin-bottom: -5%"><h1>{{ page_title }}</h1></div>
+
+<div class="grid-container">
+    <div class="content-grid">
+        {% block main %}
+        {% endblock %}
+    </div>
+
+    <div class="nav-grid-left" id="previous_page">
+        {% if prev_page is not none %}
+            <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page.page_number) }}">
+               {{ prev_page.title }} 
+            </a>
+            <p style="text-align:center;">By {{ prev_page.author }}</p>
+        {% else %}
+            ~
+        {% endif %}
+    </div>
+    <div class="nav-grid-right" id="next_page">
+        {% if next_page is not none %}
+            <a href="{{ url_for('single_page', issue_number=issue_number, page_number=next_page.page_number) }}">
+               {{ next_page.title }} 
+            </a>
+            <p style="text-align:center;">By {{ next_page.author }}</p>
+        {% else %}
+            ~
+        {% endif %}
     </div>
 </div>
 
