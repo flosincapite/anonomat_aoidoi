@@ -131,7 +131,8 @@ def _render_author_page(*args):
   pass
 
 
-def _render_single_poem(the_issue, this_page, message):
+def _render_single_poem(the_issue, page_number, pages, message):
+    this_page = pages[page_number]
     return flask.render_template(
         'single_poem.html',
         page_title=this_page.title or "Poem",
@@ -143,7 +144,8 @@ def _render_single_poem(the_issue, this_page, message):
         toc=the_issue.toc)
 
 
-def _render_single_image(the_issue, this_page, message):
+def _render_single_image(the_issue, page_number, pages, message):
+    this_page = pages[page_number]
     return flask.render_template(
         'author_image.html',
         page_title=this_page.title or "Image",
@@ -179,15 +181,18 @@ def single_page(issue_number, page_number):
   else:
     right_number = page_number + 1
 
+  pages = page.Page.list(issue_number, page_number - 1, page_number + 1)
+  pages = {the_page.page_number: the_page for the_page in pages}
+
   # TODO: Get left and right pages, too.
-  this_page = page.Page.list(issue_number, page_number, page_number)[0]
+  this_page = pages[page_number]
   app.wsgi_app.logger.error(this_page)
 
   message = None
   if next_page in the_issue.message_pages:
     message = the_issue.message
 
-  return _RENDER_METHODS[this_page.type](the_issue, this_page, message)  
+  return _RENDER_METHODS[this_page.type](the_issue, page_number, pages, message)
 
 
 @app.wsgi_app.route('/login', methods=['GET', 'POST'])

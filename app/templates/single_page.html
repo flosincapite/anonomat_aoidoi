@@ -1,1 +1,21 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+<div id="title">{{ title }}</div>
+
+{% block main %}
+{% endblock %}
+
+<div id="navigation">
+    <div id="previous_page">
+        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page) }}">
+            Previous Page
+        </a>
+        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=next_page) }}">
+            Next Page
+        </a>
+    </div>
+</div>
+
+{% endblock %}
