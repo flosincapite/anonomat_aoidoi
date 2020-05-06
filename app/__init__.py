@@ -9,7 +9,6 @@ from app import blog_post
 from app import config 
 from app import regex_converter
 from app.login import user
-from util import database
 
 
 wsgi_app = flask.Flask(__name__)
