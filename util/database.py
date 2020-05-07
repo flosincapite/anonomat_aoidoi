@@ -108,12 +108,18 @@ def _populate_database(meta_dict, table_of_contents, connection):
                             "single_image"
                         ),
                     )
+
             closing_image = author.get("closing_image")
             if closing_image is not None:
+                poem_list.append({})
+                poem_dict = poem_list[-1]
+                next_page = next(page)
+                poem_dict["__page"] = next_page
+                poem_dict["title"] = "Closing Image"
                 c.execute(
-                    "INSERT INTO pages (issue_number, page_number, image, author) "
-                    "values (?, ?, ?, ?)",
-                    (issue, next(page), author_background, author["name"]),
+                    "INSERT INTO pages (issue_number, page_number, title, image, author, type) "
+                    "values (?, ?, ?, ?, ?, ?)",
+                    (issue, next_page, "Closing Image", author_background, author["name"], "single_image"),
                 )
     
     toc_string = json.dumps(new_toc)
