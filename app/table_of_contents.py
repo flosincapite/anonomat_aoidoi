@@ -11,7 +11,6 @@ _Toc = collections.namedtuple('TOC', ['markup'])
 
 def generate(config_string):
     toc = json.loads(config_string)
-    print(toc)
 
     doc, tag, text = yattag.Doc().tagtext()
 
@@ -33,12 +32,6 @@ def generate(config_string):
                         klass='toc-item',
                         style='text-decoration:none',
                         href=(f'{page}')))
-                    """
-                            '{{ url_for("single_page", '
-                            f'issue_number={issue}, '
-                            f'page_number={page}'
-                            ') }}')))
-                    """
                 text(title)
 
             for subcontents in toc_dict.get('subcontents', []):
@@ -46,5 +39,4 @@ def generate(config_string):
 
     _traverse_toc(toc)
 
-    print(f'generated markup: {doc.getvalue()}')
     return _Toc(markup=flask.Markup(doc.getvalue()))
