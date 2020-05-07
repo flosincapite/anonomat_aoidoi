@@ -1,46 +1,89 @@
 {% extends "base.html" %}
 
 {% block additional_styles %}
-<style>
+    <style>
 
-.grid-container {
-    display: grid;
-    grid-template-columns: 20% 60% 20%;
-    margin: 10em 10em 20em 10em;
-    grid-row-gap: 5em;
-}
+    .grid-container {
+        display: grid;
+        grid-template-columns: 20% 60% 20%;
+        margin: 10em 10em 20em 10em;
+        grid-row-gap: 5em;
+    }
 
-.content-grid {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    word-wrap: break-all;
-    word-break: break-all;
-}
+    .grid-header {
+        grid-column-start: 1;
+        grid-column-end: 4;
+        grid-row-start: 1;
+        grid-row-end: 2;
+        border-style: solid;
+    }
 
-.nav-grid-left {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 2;
-    text-align: center;
-}
+    .content-grid {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 2;
+        word-wrap: break-all;
+        word-break: break-all;
+        border-style: solid;
+    }
 
-.nav-grid-right {
-    grid-column-start: 3;
-    grid-column-end: 4;
-    grid-row-start: 2;
-    text-align: center;
-}
+    .nav-grid-left {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 3;
+        text-align: center;
+        border-style: solid;
+    }
 
-p { white-space: pre-wrap; word-break: break-word; word-wrap: break-word; }
-img { max-width: 100%; }
+    .nav-grid-right {
+        grid-column-start: 3;
+        grid-column-end: 4;
+        grid-row-start: 3;
+        text-align: center;
+        border-style: solid;
+    }
+
+    .toc {
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: #1a2c33;
+        color: #eeeeee;
+        transition: 0.3s;
+        width: 160px;
+        position: fixed;
+        height: 100%;
+        overflow-y: scroll;
+    }
+
+    .toc-item {
+        color: #818181;
+    }
+
+    .toc-item:hover {
+        color: #f1f1f1;
+    }
+
+    .img-container {
+        text-align: center;
+    }
+
+    p {
+        white-space: pre-wrap;
+        word-break: break-word;
+        word-wrap: break-word;
+    }
+
+    img {
+        max-width: 100%;
+    }
 
 {% endblock %}
 
 {% block content %}
 
-<div id="title" style="text-align: center; margin-top: 10%; margin-bottom: -5%"><h1>{{ page_title }}</h1></div>
-
 <div class="grid-container">
+    <div id="title" class="grid-header" style="text-align: center; margin-top: 10%; margin-bottom: -5%"><h1>{{ page_title }}</h1></div>
     <div class="content-grid">
         {% block main %}
         {% endblock %}
@@ -66,6 +109,9 @@ img { max-width: 100%; }
             ~
         {% endif %}
     </div>
+</div>
+<div class="toc" id="tableContents">
+    {{ toc.markup }}
 </div>
 
 {% endblock %}
