@@ -1,6 +1,8 @@
 {% extends "single_page.html" %}
 
 {% block main %}
-<img src="{{ url_for('static', filename=include_contents) }}"></img>
+<div class="img-container">
+    <img src="{{ url_for('static', filename=include_contents) }}"></img>
+</div>
 {% endblock %}
 

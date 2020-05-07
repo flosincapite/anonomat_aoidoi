@@ -1,7 +1,9 @@
 {% extends "single_page.html" %}
 
 {% block main %}
-<img
-    id="frontispiece" src={{ url_for("static", filename=include_contents) }} type="application/jpg"
-    style="width:100%" />
+<div class="img-container">
+    <img
+        id="frontispiece" src={{ url_for("static", filename=include_contents) }} type="application/jpg"
+        style="width:100%" />
+</div>
 {% endblock %}
