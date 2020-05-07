@@ -133,6 +133,7 @@ def _render_section_head(the_issue, page_number, pages, message):
     this_page = pages[page_number]
     return flask.render_template(
         "section_head.html",
+        this_page=this_page,
         page_title=f"Section Head: {this_page.title}",
         message=message,
         include_contents=this_page.image,
@@ -147,6 +148,7 @@ def _render_author_page(the_issue, page_number, pages, message):
     this_page = pages[page_number]
     return flask.render_template(
         "author_image.html",
+        this_page=this_page,
         page_title=f"Unimplemented author page for {pages[page_number].author}",
         include_contents=this_page.image,
         message=message,
@@ -161,6 +163,7 @@ def _render_single_poem(the_issue, page_number, pages, message):
     this_page = pages[page_number]
     return flask.render_template(
         "single_poem.html",
+        this_page=this_page,
         page_title=this_page.title or "Poem",
         page_html=this_page.contents_html,
         message=message,
@@ -175,6 +178,7 @@ def _render_single_image(the_issue, page_number, pages, message):
     this_page = pages[page_number]
     return flask.render_template(
         "single_image.html",
+        this_page=this_page,
         page_title=this_page.title or "Image",
         include_contents=this_page.image,
         message=message,

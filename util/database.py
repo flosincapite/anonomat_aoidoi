@@ -27,14 +27,9 @@ def _populate_database(meta_dict, table_of_contents, connection):
     cover_png = meta_dict.get("cover")
     title = meta_dict.get("title")
     issue = meta_dict.get("issue")
-    toc_string = json.dumps(table_of_contents)
+    new_toc = {'issue': issue}
 
     c = connection.cursor()
-    c.execute(
-        "INSERT INTO issues (id, title, cover_png, table_of_contents) "
-        "values (?, ?, ?, ?);",
-        (issue, title, cover_png, toc_string),
-    )
 
     def _pages():
         page = 0
@@ -44,34 +39,52 @@ def _populate_database(meta_dict, table_of_contents, connection):
 
     page = _pages()
     for section in table_of_contents.get("sections", []):
+        section_list = new_toc.setdefault("subcontents", [])
+        section_dict = {}
+        section_list.append(section_dict)
+        section_dict["title"] = section["title"]
         base_dir = section.get("base_dir", "")
         cover = section.get("cover")
         if cover is not None:
+            next_page = next(page)
+            section_dict["__page"] = next_page
             cover = os.path.join(base_dir, cover)
             c.execute(
                 "INSERT INTO pages (issue_number, page_number, image, title, type) "
                 "values (?, ?, ?, ?, ?)",
-                (issue, next(page), cover, section["title"], "section_head"),
+                (issue, next_page, cover, section["title"], "section_head"),
             )
         for author in section.get("authors", []):
             author_background = author.get("image", "")
             if author_background:
                 author_background = os.path.join(base_dir, author_background)
+            author_list = section_dict.setdefault("subcontents", []) 
+            author_dict = {}
+            author_list.append(author_dict)
+            author_dict["title"] = author["name"]
+            next_page = next(page)
+            author_dict["__page"] = next_page
             c.execute(
                 "INSERT INTO pages (issue_number, page_number, image, author, type) "
                 "values (?, ?, ?, ?, ?)",
-                (issue, next(page), author_background, author["name"], "author_page"),
+                (issue, next_page, author_background, author["name"], "author_page"),
             )
 
             for poem in author.get("poems", []):
+                poem_list = author_dict.setdefault("subcontents", [])
+                poem_list.append({})
+                poem_dict = poem_list[-1]
+                next_page = next(page)
+                poem_dict["__page"] = next_page
                 if poem.get("contents_html") is not None:
+                    poem_dict["title"] = poem.get("title", "Untitled Poem")
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, contents_html, author, background_image, type) "
                         "values (?, ?, ?, ?, ?, ?, ?)",
                         (
                             issue,
-                            next(page),
+                            next_page,
                             poem["title"],
                             os.path.join(base_dir, poem["contents_html"]),
                             author["name"],
@@ -81,13 +94,14 @@ def _populate_database(meta_dict, table_of_contents, connection):
                     )
                 else:
                     assert poem.get("image") is not None
+                    poem_dict["title"] = poem.get("title", "Untitled Image")
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, author, image, type) "
                         "values (?, ?, ?, ?, ?, ?)",
                         (
                             issue,
-                            next(page),
+                            next_page,
                             poem.get("title", ""),
                             author["name"],
                             os.path.join(poem["image"]),
@@ -101,6 +115,13 @@ def _populate_database(meta_dict, table_of_contents, connection):
                     "values (?, ?, ?, ?)",
                     (issue, next(page), author_background, author["name"]),
                 )
+    
+    toc_string = json.dumps(new_toc)
+    c.execute(
+        "INSERT INTO issues (id, title, cover_png, table_of_contents) "
+        "values (?, ?, ?, ?);",
+        (issue, title, cover_png, toc_string),
+    )
 
     connection.commit()
 

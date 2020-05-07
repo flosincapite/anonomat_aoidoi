@@ -9,6 +9,7 @@ import flask
 import yaml
 
 import app
+from app import table_of_contents
 
 
 _Issue = collections.namedtuple(
@@ -50,7 +51,7 @@ class Issue(_Issue):
           return None
 
         title, cover_png, toc_json = rows[0]
-        toc = json.loads(toc_json)
+        toc = table_of_contents.generate(toc_json)
 
         c.execute(
             'SELECT MIN(page_number) FROM pages WHERE issue_number=?', number)
