@@ -60,10 +60,9 @@
     .navopenarrow {}
 
     #main {
-      transition: margin-left .5s;
+        transition: .5s;
       padding: 20px;
       margin-left: 10%;
-      margin-right: 10%;
       height: 100vh;
     }
 
@@ -123,7 +122,8 @@
 
 function openNav() {
   document.getElementById("theSideNav").style.left = "0";
-  var obj = document.getElementById("main");
+  document.getElementById("main").style["margin-left"] = "10%";
+  document.getElementById("main").style["margin-right"] = "0";
   // var span = document.getElementById("main").querySelector("#arrow");
   // console.log(span);
   // console.log(span.innerHTML);
@@ -140,6 +140,8 @@ function openNav() {
 
 function closeNav() {
   document.getElementById("theSideNav").style.left= "-9%";
+  document.getElementById("main").style["margin-left"] = "5.5%";
+  document.getElementById("main").style["margin-right"] = "4.5%";
   var arrow = document.getElementById("sideNavArrow");
   arrow.style.left = "90%";
   // arrow.innerHTML = "&#9654;";

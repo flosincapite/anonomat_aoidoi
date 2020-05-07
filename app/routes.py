@@ -134,7 +134,7 @@ def _render_section_head(the_issue, page_number, pages, message):
     return flask.render_template(
         "section_head.html",
         this_page=this_page,
-        page_title=f"Section Head: {this_page.title}",
+        page_title=this_page.title,
         message=message,
         include_contents=this_page.image,
         issue_number=the_issue.number,
@@ -149,7 +149,7 @@ def _render_author_page(the_issue, page_number, pages, message):
     return flask.render_template(
         "author_image.html",
         this_page=this_page,
-        page_title=f"Unimplemented author page for {pages[page_number].author}",
+        page_title=this_page.title,
         include_contents=this_page.image,
         message=message,
         issue_number=the_issue.number,
@@ -164,7 +164,7 @@ def _render_single_poem(the_issue, page_number, pages, message):
     return flask.render_template(
         "single_poem.html",
         this_page=this_page,
-        page_title=this_page.title or "Poem",
+        page_title=this_page.title or "Untitled Poem",
         page_html=this_page.contents_html,
         message=message,
         issue_number=the_issue.number,
@@ -179,7 +179,36 @@ def _render_single_image(the_issue, page_number, pages, message):
     return flask.render_template(
         "single_image.html",
         this_page=this_page,
-        page_title=this_page.title or "Image",
+        page_title=this_page.title or "Untitled Image",
+        include_contents=this_page.image,
+        message=message,
+        issue_number=the_issue.number,
+        prev_page=pages.get(page_number - 1),
+        next_page=pages.get(page_number + 1),
+        toc=the_issue.toc,
+    )
+
+
+def _render_toc(the_issue, page_number, pages, message):
+    this_page = pages[page_number]
+    return flask.render_template(
+        "table_of_contents.html",
+        this_page=this_page,
+        page_title=this_page.title or "Table of Contents",
+        message=message,
+        issue_number=the_issue.number,
+        prev_page=pages.get(page_number - 1),
+        next_page=pages.get(page_number + 1),
+        toc=the_issue.toc,
+    )
+
+
+def _render_title(the_issue, page_number, pages, message):
+    this_page = pages[page_number]
+    return flask.render_template(
+        "single_image.html",
+        this_page=this_page,
+        page_title=this_page.title or "Title Page",
         include_contents=this_page.image,
         message=message,
         issue_number=the_issue.number,
@@ -190,10 +219,12 @@ def _render_single_image(the_issue, page_number, pages, message):
 
 
 _RENDER_METHODS = {
-    "section_head": _render_section_head,
     "author_page": _render_author_page,
-    "single_poem": _render_single_poem,
+    "section_head": _render_section_head,
     "single_image": _render_single_image,
+    "single_poem": _render_single_poem,
+    "table_of_contents": _render_toc,
+    "title_page": _render_title,
 }
 
 

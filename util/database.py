@@ -38,6 +38,22 @@ def _populate_database(meta_dict, table_of_contents, connection):
             yield page
 
     page = _pages()
+
+    cover_page = next(page)
+    c.execute(
+        "INSERT INTO pages (issue_number, page_number, title, image, type) "
+        "values (?, ?, ?, ?, ?)",
+        (issue, cover_page, title, cover_png, "title_page"),
+    )
+
+    toc_page = next(page)
+    c.execute(
+        "INSERT INTO pages (issue_number, page_number, title, type) "
+        "values (?, ?, ?, ?)",
+        (issue, toc_page, "Table of Contents", "table_of_contents"),
+    )
+    new_toc['toc_page'] = toc_page
+
     for section in table_of_contents.get("sections", []):
         section_list = new_toc.setdefault("subcontents", [])
         section_dict = {}
@@ -54,6 +70,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                 "values (?, ?, ?, ?, ?)",
                 (issue, next_page, cover, section["title"], "section_head"),
             )
+
         for author in section.get("authors", []):
             author_background = author.get("image", "")
             if author_background:
@@ -65,7 +82,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
             next_page = next(page)
             author_dict["__page"] = next_page
             c.execute(
-                "INSERT INTO pages (issue_number, page_number, image, author, type) "
+                "INSERT INTO pages (issue_number, page_number, image, title, type) "
                 "values (?, ?, ?, ?, ?)",
                 (issue, next_page, author_background, author["name"], "author_page"),
             )
@@ -77,7 +94,8 @@ def _populate_database(meta_dict, table_of_contents, connection):
                 next_page = next(page)
                 poem_dict["__page"] = next_page
                 if poem.get("contents_html") is not None:
-                    poem_dict["title"] = poem.get("title", "Untitled Poem")
+                    title = poem.get("title", "Untitled Poem")
+                    poem_dict["title"] = title
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, contents_html, author, background_image, type) "
@@ -85,7 +103,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                         (
                             issue,
                             next_page,
-                            poem["title"],
+                            title,
                             os.path.join(base_dir, poem["contents_html"]),
                             author["name"],
                             author_background,
@@ -94,7 +112,8 @@ def _populate_database(meta_dict, table_of_contents, connection):
                     )
                 else:
                     assert poem.get("image") is not None
-                    poem_dict["title"] = poem.get("title", "Untitled Image")
+                    title = poem.get("title", "Untitled Image")
+                    poem_dict["title"] = title
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, author, image, type) "
@@ -102,7 +121,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                         (
                             issue,
                             next_page,
-                            poem.get("title", ""),
+                            title,
                             author["name"],
                             os.path.join(poem["image"]),
                             "single_image"

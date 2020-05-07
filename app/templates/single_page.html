@@ -6,7 +6,9 @@
     .grid-container {
         display: grid;
         grid-template-columns: 20% 60% 20%;
-        margin: 10em 10em 20em 10em;
+        margin-top: 10em;
+        margin-bottom: 10em;
+        /* margin: 10em 10em 20em 10em; */
         grid-row-gap: 5em;
     }
 
@@ -15,16 +17,15 @@
         grid-column-end: 4;
         grid-row-start: 1;
         grid-row-end: 2;
-        border-style: solid;
     }
 
     .content-grid {
         grid-column-start: 2;
         grid-column-end: 3;
         grid-row-start: 2;
+        grid-row-end: 3;
         word-wrap: break-all;
         word-break: break-all;
-        border-style: solid;
     }
 
     .nav-grid-left {
@@ -32,7 +33,13 @@
         grid-column-end: 2;
         grid-row-start: 3;
         text-align: center;
-        border-style: solid;
+    }
+
+    .nav-grid-center {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 3;
+        text-align: center;
     }
 
     .nav-grid-right {
@@ -40,7 +47,6 @@
         grid-column-end: 4;
         grid-row-start: 3;
         text-align: center;
-        border-style: solid;
     }
 
     .toc {
@@ -90,29 +96,41 @@
         {% endblock %}
     </div>
 
-    <div class="nav-grid-left" id="previous_page">
+    <div class="nav-grid-left" id="previous-page">
         {% if prev_page is not none %}
             <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page.page_number) }}">
-               {{ prev_page.title }} 
+               {{ prev_page.title }}
             </a>
-            <p style="text-align:center;">By {{ prev_page.author }}</p>
+            {% if prev_page.type in ('single_poem', 'single_image') %}
+                <p style="text-align:center;">By {{ prev_page.author }}</p>
+            {% endif %}
         {% else %}
             ~
         {% endif %}
     </div>
-    <div class="nav-grid-right" id="next_page">
+    <div class="nav-grid-center" id="table-of-contents">
+        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=toc.toc_page) }}">
+            Table of Contents
+        </a>
+    </div>
+    <div class="nav-grid-right" id="next-page">
         {% if next_page is not none %}
             <a href="{{ url_for('single_page', issue_number=issue_number, page_number=next_page.page_number) }}">
-               {{ next_page.title }} 
+                    
+               {{ next_page.title }}
             </a>
-            <p style="text-align:center;">By {{ next_page.author }}</p>
+            {% if next_page.type in ('single_poem', 'single_image') %}
+                <p style="text-align:center;">By {{ next_page.author }}</p>
+            {% endif %}
         {% else %}
             ~
         {% endif %}
     </div>
 </div>
+{% if false %}
 <div class="toc" id="tableContents">
     {{ toc.markup }}
 </div>
+{% endif %}
 
 {% endblock %}
