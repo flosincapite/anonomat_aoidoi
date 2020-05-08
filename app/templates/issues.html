@@ -29,14 +29,11 @@
 
 Issue #{{ issue.number }}
 <br />
-{{ issue.title }}
 <br />
 
 <a href="{{ url_for(
   'single_page', issue_number=issue.number, page_number=issue.lowest) }}">
-  <img
-    src="{{ url_for('static', filename=issue.cover) }}" width=200px
-    opacity=1.0 />
+  <img src="{{ url_for('static', filename=issue.cover) }}" width=200px />
 </a>
 </div>
 {% endfor %}

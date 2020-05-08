@@ -51,6 +51,7 @@ class Issue(_Issue):
           return None
 
         title, cover_png, toc_json = rows[0]
+        print(f'Retrieved title is {title}')
         toc = table_of_contents.generate(toc_json)
 
         c.execute(

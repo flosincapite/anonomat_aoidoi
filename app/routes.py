@@ -128,6 +128,7 @@ def _file_exists(file_name):
     return True
 
 
+# TODO: These render methods can be made simpler.
 def _render_section_head(the_issue, page_number, pages, message):
     # TODO: Implement this.
     this_page = pages[page_number]
@@ -141,6 +142,7 @@ def _render_section_head(the_issue, page_number, pages, message):
         prev_page=pages.get(page_number - 1),
         next_page=pages.get(page_number + 1),
         toc=the_issue.toc,
+        includenav=True,
     )
 
 def _render_author_page(the_issue, page_number, pages, message):
@@ -156,6 +158,7 @@ def _render_author_page(the_issue, page_number, pages, message):
         prev_page=pages.get(page_number - 1),
         next_page=pages.get(page_number + 1),
         toc=the_issue.toc,
+        includenav=True,
     )
 
 
@@ -171,6 +174,7 @@ def _render_single_poem(the_issue, page_number, pages, message):
         prev_page=pages.get(page_number - 1),
         next_page=pages.get(page_number + 1),
         toc=the_issue.toc,
+        includenav=True,
     )
 
 
@@ -186,20 +190,7 @@ def _render_single_image(the_issue, page_number, pages, message):
         prev_page=pages.get(page_number - 1),
         next_page=pages.get(page_number + 1),
         toc=the_issue.toc,
-    )
-
-
-def _render_toc(the_issue, page_number, pages, message):
-    this_page = pages[page_number]
-    return flask.render_template(
-        "table_of_contents.html",
-        this_page=this_page,
-        page_title=this_page.title or "Table of Contents",
-        message=message,
-        issue_number=the_issue.number,
-        prev_page=pages.get(page_number - 1),
-        next_page=pages.get(page_number + 1),
-        toc=the_issue.toc,
+        includenav=True,
     )
 
 
@@ -215,6 +206,7 @@ def _render_title(the_issue, page_number, pages, message):
         prev_page=pages.get(page_number - 1),
         next_page=pages.get(page_number + 1),
         toc=the_issue.toc,
+        includenav=True,
     )
 
 
@@ -223,9 +215,22 @@ _RENDER_METHODS = {
     "section_head": _render_section_head,
     "single_image": _render_single_image,
     "single_poem": _render_single_poem,
-    "table_of_contents": _render_toc,
     "title_page": _render_title,
 }
+
+
+# TODO: This is a special case of single_page--use inheritance to collapse?
+@app.wsgi_app.route("/table_of_contents/<re('(\d+)'):issue_number>")
+def table_of_contents(issue_number):
+    issue_number = int(issue_number)
+    the_issue = issue.Issue.create(issue_number)
+    return flask.render_template(
+        "table_of_contents.html",
+        page_title="Table of Contents",
+        issue_number=the_issue.number,
+        toc=the_issue.toc,
+        includenav=False,
+    )
 
 
 @app.wsgi_app.route("/viewer/<re('(\d+)'):issue_number>/<re('(\d+)'):page_number>")

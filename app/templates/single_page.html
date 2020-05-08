@@ -96,6 +96,7 @@
         {% endblock %}
     </div>
 
+    {% if includenav %}
     <div class="nav-grid-left" id="previous-page">
         {% if prev_page is not none %}
             <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page.page_number) }}">
@@ -109,7 +110,7 @@
         {% endif %}
     </div>
     <div class="nav-grid-center" id="table-of-contents">
-        <a href="{{ url_for('single_page', issue_number=issue_number, page_number=toc.toc_page) }}">
+        <a href="{{ url_for('table_of_contents', issue_number=issue_number) }}">
             Table of Contents
         </a>
     </div>
@@ -126,6 +127,7 @@
             ~
         {% endif %}
     </div>
+    {% endif %}
 </div>
 {% if false %}
 <div class="toc" id="tableContents">

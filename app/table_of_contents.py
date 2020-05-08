@@ -9,7 +9,7 @@ import flask
 _Toc = collections.namedtuple('TOC', ['markup', 'toc_page'])
     
     
-def _traverse_toc(toc_dict, doc=None, tag=None, text=None):
+def _traverse_toc(toc_dict, issue, doc=None, tag=None, text=None):
     if doc is None:
         doc, tag, text = yattag.Doc().tagtext()
 
@@ -25,11 +25,11 @@ def _traverse_toc(toc_dict, doc=None, tag=None, text=None):
                     'a',
                     klass='toc-item',
                     style='text-decoration:none',
-                    href=(f'{page}')))
+                    href=(f'/viewer/{issue}/{page}')))
             text(title)
 
         for subcontents in toc_dict.get('subcontents', []):
-            _ = _traverse_toc(subcontents, doc, tag, text)
+            _ = _traverse_toc(subcontents, issue, doc, tag, text)
 
     return doc
 
@@ -37,7 +37,7 @@ def _traverse_toc(toc_dict, doc=None, tag=None, text=None):
 def generate(config_string):
     toc = json.loads(config_string)
 
-    html_doc = _traverse_toc(toc)
+    html_doc = _traverse_toc(toc, toc['issue'])
 
     toc_page = toc.get('toc_page')
     return _Toc(markup=flask.Markup(html_doc.getvalue()), toc_page=toc_page)
