@@ -10,7 +10,7 @@
     .sidenav {
       height: 100%;
       /* width: 12%; */
-      width: 10%;
+      width: 9em;
       position: fixed;
       z-index: 1;
       top: 0;
@@ -37,9 +37,10 @@
 
     .sidenav .closebtn {
         position: absolute;
+        z-index: 1;
         top: 50%;
-        left: 65%;
-        font-size: 36px;
+        right: -.5em; 
+        font-size: 2em;
     }
 
     .navopenarrow {}
@@ -47,7 +48,7 @@
     #main {
         transition: .5s;
         padding: 20px;
-        margin-left: 10%;
+        margin-left: 9em;
         height: 100vh;
     }
 
@@ -107,13 +108,13 @@
 
 function openNav() {
   document.getElementById("theSideNav").style.left = "0";
-  document.getElementById("main").style["margin-left"] = "10%";
+  document.getElementById("main").style["margin-left"] = "9em";
   document.getElementById("main").style["margin-right"] = "0";
   // var span = document.getElementById("main").querySelector("#arrow");
   // console.log(span);
   // console.log(span.innerHTML);
   var arrow = document.getElementById("sideNavArrow");
-  arrow.style.left = "65%";
+  arrow.style.right = "-.5em"; 
   // arrow.innerHTML = "&#9664;";
   arrow.style.transform = "none";
   // arrow.style.transform = "translateX(90px)";
@@ -124,11 +125,11 @@ function openNav() {
 }
 
 function closeNav() {
-  document.getElementById("theSideNav").style.left= "-9%";
-  document.getElementById("main").style["margin-left"] = "5.5%";
-  document.getElementById("main").style["margin-right"] = "4.5%";
+  document.getElementById("theSideNav").style.left= "-8em";
+  document.getElementById("main").style["margin-left"] = "4.5em";
+  document.getElementById("main").style["margin-right"] = "3.5em";
   var arrow = document.getElementById("sideNavArrow");
-  arrow.style.left = "90%";
+  arrow.style.right = "-2em"; 
   // arrow.innerHTML = "&#9654;";
   arrow.style.transform = "rotate(180deg)";
   // arrow.style.transform = "translateX(100px)";
