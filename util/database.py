@@ -25,8 +25,8 @@ def _create_tables(connection):
 def _populate_database(meta_dict, table_of_contents, connection):
     # TODO: meta_dict and table_of_contents no longer need to be separate.
     cover_png = meta_dict.get("cover")
-    title = meta_dict.get("title")
     issue = meta_dict.get("issue")
+    title = meta_dict.get("title")
     new_toc = {'issue': issue}
 
     c = connection.cursor()
@@ -45,14 +45,11 @@ def _populate_database(meta_dict, table_of_contents, connection):
         "values (?, ?, ?, ?, ?)",
         (issue, cover_page, title, cover_png, "title_page"),
     )
-
-    toc_page = next(page)
-    c.execute(
-        "INSERT INTO pages (issue_number, page_number, title, type) "
-        "values (?, ?, ?, ?)",
-        (issue, toc_page, "Table of Contents", "table_of_contents"),
-    )
-    new_toc['toc_page'] = toc_page
+    section_list = new_toc.setdefault("subcontents", [])
+    section_dict = {}
+    section_list.append(section_dict)
+    section_dict["title"] = "Cover"
+    section_dict["__page"] = cover_page
 
     for section in table_of_contents.get("sections", []):
         section_list = new_toc.setdefault("subcontents", [])
@@ -79,13 +76,15 @@ def _populate_database(meta_dict, table_of_contents, connection):
             author_dict = {}
             author_list.append(author_dict)
             author_dict["title"] = author["name"]
-            next_page = next(page)
-            author_dict["__page"] = next_page
-            c.execute(
-                "INSERT INTO pages (issue_number, page_number, image, title, type) "
-                "values (?, ?, ?, ?, ?)",
-                (issue, next_page, author_background, author["name"], "author_page"),
-            )
+            
+            if not author.get('exclude_page'):
+                next_page = next(page)
+                author_dict["__page"] = next_page
+                c.execute(
+                    "INSERT INTO pages (issue_number, page_number, image, title, type) "
+                    "values (?, ?, ?, ?, ?)",
+                    (issue, next_page, author_background, author["name"], "author_page"),
+                )
 
             for poem in author.get("poems", []):
                 poem_list = author_dict.setdefault("subcontents", [])
@@ -123,7 +122,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                             next_page,
                             title,
                             author["name"],
-                            os.path.join(poem["image"]),
+                            os.path.join(base_dir, poem["image"]),
                             "single_image"
                         ),
                     )
@@ -142,6 +141,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                 )
     
     toc_string = json.dumps(new_toc)
+    title = meta_dict.get("title")
     c.execute(
         "INSERT INTO issues (id, title, cover_png, table_of_contents) "
         "values (?, ?, ?, ?);",
