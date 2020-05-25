@@ -3,11 +3,17 @@
 {% block additional_styles %}
     <style>
 
+    sup, sub {
+        vertical-align: baseline;
+        position: relative;
+    }
+
     .grid-container {
         display: grid;
-        grid-template-columns: minmax(10em, 20%) minmax(30em, 60%) minmax(10em, 20%);
-        margin-top: 10em;
+        grid-template-columns: minmax(15em, 20%) minmax(45em, 60%) minmax(15em, 20%);
+        margin-top: 5em;
         margin-bottom: 10em;
+        row-gap: 2em;
     }
 
     .grid-header {
@@ -26,6 +32,9 @@
         word-wrap: break-all;
         word-break: break-all;
         font-size: large;
+        border: 1px solid black;
+        background-color: #f9f9f9;
+        padding: 1em;
     }
 
     .nav-grid-left {
@@ -67,7 +76,7 @@
         color: #818181;
     }
 
-    .toc-item:hover {
+    .toc-item a:hover {
         color: #f1f1f1;
     }
 
