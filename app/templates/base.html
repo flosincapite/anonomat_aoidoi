@@ -35,7 +35,7 @@
       color: #f1f1f1;
     }
 
-    .sidenav .closebtn {
+    .sidenav .closeBtn {
         position: absolute;
         z-index: 1;
         top: 50%;
@@ -73,7 +73,7 @@
 {% block sidebar %}
 <div id="theSideNav" class="sidenav">
   <a
-    href="javascript:void(0);" class="closebtn" id="sideNavArrow"
+    href="javascript:void(0);" class="closeBtn" id="sideNavArrow"
     title="collapse sidebar" onclick="closeNav()">
   <!-- <a href="javascript:void(0);" onclick="closeNav()"> -->
   <!-- &times; -->
@@ -126,8 +126,8 @@ function openNav() {
 
 function closeNav() {
   document.getElementById("theSideNav").style.left= "-8em";
-  document.getElementById("main").style["margin-left"] = "4.5em";
-  document.getElementById("main").style["margin-right"] = "3.5em";
+  document.getElementById("main").style["margin-left"] = "5em";
+  document.getElementById("main").style["margin-right"] = "4em";
   var arrow = document.getElementById("sideNavArrow");
   arrow.style.right = "-2em"; 
   // arrow.innerHTML = "&#9654;";

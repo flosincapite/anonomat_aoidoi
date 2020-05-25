@@ -5,11 +5,9 @@
 
     .grid-container {
         display: grid;
-        grid-template-columns: 20% 60% 20%;
+        grid-template-columns: minmax(10em, 20%) minmax(30em, 60%) minmax(10em, 20%);
         margin-top: 10em;
         margin-bottom: 10em;
-        /* margin: 10em 10em 20em 10em; */
-        grid-row-gap: 5em;
     }
 
     .grid-header {
@@ -17,6 +15,7 @@
         grid-column-end: 4;
         grid-row-start: 1;
         grid-row-end: 2;
+        text-align: center;
     }
 
     .content-grid {
@@ -26,6 +25,7 @@
         grid-row-end: 3;
         word-wrap: break-all;
         word-break: break-all;
+        font-size: large;
     }
 
     .nav-grid-left {
@@ -90,7 +90,7 @@
 {% block content %}
 
 <div class="grid-container">
-    <div id="title" class="grid-header" style="text-align: center; margin-top: 10%; margin-bottom: -5%"><h1>{{ page_title }}</h1></div>
+    <div id="title" class="grid-header"><h1>{{ page_title }}</h1></div>
     <div class="content-grid">
         {% block main %}
         {% endblock %}
