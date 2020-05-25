@@ -92,6 +92,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                 poem_dict = poem_list[-1]
                 next_page = next(page)
                 poem_dict["__page"] = next_page
+                this_author = poem.get("author", author["name"])
                 if poem.get("contents_html") is not None:
                     title = poem.get("title", "Untitled Poem")
                     poem_dict["title"] = title
@@ -104,7 +105,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                             next_page,
                             title,
                             os.path.join(base_dir, poem["contents_html"]),
-                            author["name"],
+                            this_author,
                             author_background,
                             "single_poem"
                         )
@@ -121,7 +122,7 @@ def _populate_database(meta_dict, table_of_contents, connection):
                             issue,
                             next_page,
                             title,
-                            author["name"],
+                            this_author,
                             os.path.join(base_dir, poem["image"]),
                             "single_image"
                         ),
