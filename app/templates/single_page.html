@@ -119,7 +119,7 @@
         {% endif %}
     </div>
     <div class="nav-grid-center" id="table-of-contents">
-        <a href="{{ url_for('table_of_contents', issue_number=issue_number) }}">
+        <a href="{{ url_for('single_page', issue_number=issue_number, page_number='toc') }}">
             Table of Contents
         </a>
     </div>

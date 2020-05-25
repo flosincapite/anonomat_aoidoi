@@ -219,11 +219,7 @@ _RENDER_METHODS = {
 }
 
 
-# TODO: This is a special case of single_page--use inheritance to collapse?
-@app.wsgi_app.route("/table_of_contents/<re('(\d+)'):issue_number>")
-def table_of_contents(issue_number):
-    issue_number = int(issue_number)
-    the_issue = issue.Issue.create(issue_number)
+def _table_of_contents(the_issue):
     return flask.render_template(
         "table_of_contents.html",
         page_title="Table of Contents",
@@ -233,11 +229,18 @@ def table_of_contents(issue_number):
     )
 
 
-@app.wsgi_app.route("/viewer/<re('(\d+)'):issue_number>/<re('(\d+)'):page_number>")
+@app.wsgi_app.route("/viewer/<re('(\d+)'):issue_number>/<re('(\d+|toc)'):page_number>")
 def single_page(issue_number, page_number):
     # TODO: Consult page number!
-    issue_number, page_number = map(int, (issue_number, page_number))
+    issue_number = int(issue_number)
     the_issue = issue.Issue.create(issue_number)
+
+    # Go straight to TOC if that's the mood.
+    if page_number == 'toc':
+        return _table_of_contents(the_issue)
+
+    # TODO: Handle error when page_number is out of bounds.
+    page_number = int(page_number)
 
     if page_number <= 0:
         left_number = None
@@ -251,8 +254,6 @@ def single_page(issue_number, page_number):
 
     pages = page.Page.list(issue_number, page_number - 1, page_number + 1)
     pages = {the_page.page_number: the_page for the_page in pages}
-
-    # TODO: Get left and right pages, too.
     this_page = pages[page_number]
     app.wsgi_app.logger.error(this_page)
 
