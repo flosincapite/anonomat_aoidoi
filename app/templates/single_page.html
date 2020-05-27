@@ -111,7 +111,7 @@
             <a href="{{ url_for('single_page', issue_number=issue_number, page_number=prev_page.page_number) }}">
                {{ prev_page.title }}
             </a>
-            {% if prev_page.type in ('single_poem', 'single_image') %}
+            {% if prev_page.type in ('single_poem', 'single_image') and prev_page.author is not none %}
                 <p style="text-align:center;">By {{ prev_page.author }}</p>
             {% endif %}
         {% else %}
@@ -129,7 +129,7 @@
                     
                {{ next_page.title }}
             </a>
-            {% if next_page.type in ('single_poem', 'single_image') %}
+            {% if next_page.type in ('single_poem', 'single_image') and next_page.author is not none %}
                 <p style="text-align:center;">By {{ next_page.author }}</p>
             {% endif %}
         {% else %}
