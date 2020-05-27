@@ -27,6 +27,9 @@ def _populate_database(meta_dict, table_of_contents, connection):
     cover_png = meta_dict.get("cover")
     issue = meta_dict.get("issue")
     title = meta_dict.get("title")
+
+    # Any subdict in new_toc with the "title" field populated will show up in
+    # the TOC.
     new_toc = {'issue': issue}
 
     c = connection.cursor()
@@ -75,27 +78,37 @@ def _populate_database(meta_dict, table_of_contents, connection):
             author_list = section_dict.setdefault("subcontents", []) 
             author_dict = {}
             author_list.append(author_dict)
-            author_dict["title"] = author["name"]
+            the_author = author.get("name")
+            author_dict["title"] = the_author
             
-            if not author.get('exclude_page'):
+            if not author.get('exclude_page') and the_author is not None:
                 next_page = next(page)
                 author_dict["__page"] = next_page
                 c.execute(
                     "INSERT INTO pages (issue_number, page_number, image, title, type) "
                     "values (?, ?, ?, ?, ?)",
-                    (issue, next_page, author_background, author["name"], "author_page"),
+                    (issue, next_page, author_background, the_author, "author_page"),
                 )
 
+            last_untitled = False
             for poem in author.get("poems", []):
                 poem_list = author_dict.setdefault("subcontents", [])
                 poem_list.append({})
                 poem_dict = poem_list[-1]
                 next_page = next(page)
                 poem_dict["__page"] = next_page
-                this_author = poem.get("author", author["name"])
+                this_author = poem.get("author", the_author)
+
                 if poem.get("contents_html") is not None:
-                    title = poem.get("title", "Untitled Poem")
-                    poem_dict["title"] = title
+                    title = poem.get("title")
+                    if title is None:
+                        title = "Untitled Poem"
+                        if not last_untitled:
+                            poem_dict["title"] = title
+                            poem_dict["toc_title"] = "Poem Sequence"
+                        last_untitled = True
+                    else:
+                        last_untitled = False
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, contents_html, author, background_image, type) "
@@ -110,10 +123,18 @@ def _populate_database(meta_dict, table_of_contents, connection):
                             "single_poem"
                         )
                     )
+
                 else:
                     assert poem.get("image") is not None
-                    title = poem.get("title", "Untitled Image")
-                    poem_dict["title"] = title
+                    title = poem.get("title")
+                    if title is None:
+                        title = "Untitled Image"
+                        if not last_untitled:
+                            poem_dict["title"] = title
+                            poem_dict["toc_title"] = "Image Sequence"
+                        last_untitled = True
+                    else:
+                        last_untitled = False
                     c.execute(
                         "INSERT INTO pages "
                         "(issue_number, page_number, title, author, image, type) "
