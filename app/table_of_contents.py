@@ -16,7 +16,7 @@ def _traverse_toc(toc_dict, issue, doc=None, tag=None, text=None):
     with contextlib.ExitStack() as stack:
         title = toc_dict.get('title')
         if title is not None:
-            toc_title = toc_dict.get('sequence_title', title)
+            toc_title = toc_dict.get('toc_title', title)
             stack.enter_context(tag('ul', style='list-style-type:none;'))
             stack.enter_context(tag('li'))
             stack.enter_context(tag('span', klass='toc-item'))
